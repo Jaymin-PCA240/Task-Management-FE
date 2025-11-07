@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="title2 desc2">
+  <title id="title2">Task flow colored icon</title>
+  <desc id="desc2">Colored task flow with arrows</desc>
+
+  <!-- top-left -->
+  <rect x="6" y="6" width="20" height="14" rx="3" fill="#ffffff" stroke="#2b6cb0" stroke-width="2"/>
+  <path d="M10 10h6" stroke="#2b6cb0" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M10 14h10" stroke="#2b6cb0" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- middle -->
+  <rect x="28" y="24" width="22" height="14" rx="3" fill="#ffffff" stroke="#38a169" stroke-width="2"/>
+  <path d="M32 28h6" stroke="#38a169" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M32 32h10" stroke="#38a169" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- bottom-left -->
+  <rect x="6" y="42" width="20" height="14" rx="3" fill="#ffffff" stroke="#dd6b20" stroke-width="2"/>
+  <path d="M10 46h6" stroke="#dd6b20" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M10 50h10" stroke="#dd6b20" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- connectors / arrows -->
+  <path d="M26 13c4 2 6 6 6 11" fill="none" stroke="#718096" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M26 49c4-2 6-6 6-11" fill="none" stroke="#718096" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="34 18 31 15 34 13" fill="#718096"/>
+  <polygon points="34 36 31 39 34 41" fill="#718096"/>
+</svg>

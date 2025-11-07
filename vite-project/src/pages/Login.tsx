@@ -1,0 +1,103 @@
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { TextField, Button, CircularProgress, InputAdornment, IconButton } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { type AppDispatch } from "../app/store";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { loginThunk } from "../features/auth/authSlice";
+import { AuthLayout } from "../components/AuthLayout";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+
+const LoginSchema = Yup.object({
+  email: Yup.string().email("Invalid email").required("Email required"),
+  password: Yup.string().required("Password required"),
+});
+
+export default function Login() {
+  const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <AuthLayout
+      title="Welcome Back 👋"
+      subtitle="Log in to continue managing your tasks"
+    >
+      <Formik
+        initialValues={{ email: "", password: "" }}
+        validationSchema={LoginSchema}
+        onSubmit={async (values, { setErrors }) => {
+          setLoading(true);
+          const res = await dispatch(loginThunk(values));
+          debugger;
+          setLoading(false);
+          if (res.meta.requestStatus === "fulfilled") navigate("/dashboard");
+          else setErrors({ password: "Invalid credentials" });
+        }}
+      >
+        {({ values, handleChange, errors, touched }) => (
+          <Form className="space-y-4">
+            <TextField
+              fullWidth
+              label="Email"
+              name="email"
+              value={values.email}
+              onChange={handleChange}
+              error={touched.email && Boolean(errors.email)}
+              helperText={touched.email && errors.email}
+            />
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={values.password}
+              onChange={handleChange}
+              error={touched.password && Boolean(errors.password)}
+              helperText={touched.password && errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Button
+              fullWidth
+              variant="contained"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <CircularProgress size={22} color="inherit" />
+              ) : (
+                "Login"
+              )}
+            </Button>
+
+            <div className="flex justify-between text-sm mt-2">
+              <Link
+                to="/forgot-password"
+                className="text-blue-600 hover:underline"
+              >
+                Forgot password?
+              </Link>
+              <Link to="/register" className="text-blue-600 hover:underline">
+                Create an account
+              </Link>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </AuthLayout>
+  );
+}
