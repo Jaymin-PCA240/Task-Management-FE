@@ -16,7 +16,6 @@ export default function Header() {
         </Link>
 
         <nav className="flex items-center gap-4 text-black text-sm font-medium">
-          <Link to="/" className="hover:text-indigo-300">Home</Link>
           {accessToken ? (
             <>
               <Link to="/dashboard" className="hover:text-indigo-300">Dashboard</Link>

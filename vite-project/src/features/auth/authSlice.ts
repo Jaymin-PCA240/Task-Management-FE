@@ -36,7 +36,6 @@ export const loginThunk = createAsyncThunk(
   async (data: any, thunkAPI) => {
     try {
       const res = await api.post('/auth/login', data);
-      debugger;
       return res.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response?.data?.message || 'Login failed');
@@ -67,6 +66,42 @@ export const logoutThunk = createAsyncThunk('auth/logout', async (_, thunkAPI) =
   }
 });
 
+export const forgotPasswordThunk = createAsyncThunk(
+  "auth/forgotPassword",
+  async ({ email }: { email: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/auth/forgot-password", { email });
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to send OTP");
+    }
+  }
+);
+
+export const verifyOtpThunk = createAsyncThunk(
+  "auth/verifyOtp",
+  async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/auth/verify-otp", { email, otp });
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "OTP verification failed");
+    }
+  }
+);
+
+export const resetPasswordThunk = createAsyncThunk(
+  "auth/resetPassword",
+  async ({ resetToken, password }: { resetToken: string; password: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/auth/reset-password", { resetToken, password });
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Password reset failed");
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -79,18 +114,15 @@ const authSlice = createSlice({
     // Login
     builder
       .addCase(loginThunk.pending, (state) => {
-        debugger;
         state.loading = true;
         state.error = null;
       })
       .addCase(loginThunk.fulfilled, (state, { payload }) => {
-        debugger;
         state.loading = false;
         state.user = payload.data.user;
         state.accessToken = payload.data.token;
       })
       .addCase(loginThunk.rejected, (state, { payload }) => {
-        debugger;
         state.loading = false;
         state.error = payload as string;
       });
@@ -103,8 +135,8 @@ const authSlice = createSlice({
       })
       .addCase(registerThunk.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.user = payload.user;
-        state.accessToken = payload.token;
+        state.user = payload.data.user;
+        state.accessToken = payload.data.token;
       })
       .addCase(registerThunk.rejected, (state, { payload }) => {
         state.loading = false;

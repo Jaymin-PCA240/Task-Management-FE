@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import {
@@ -14,6 +14,7 @@ import { AuthLayout } from "../components/AuthLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../app/store";
 import { registerThunk } from "../features/auth/authSlice";
+import { useAlert } from "../context/AlertContext";
 
 const SignupSchema = Yup.object({
   name: Yup.string().required("Full name is required"),
@@ -30,8 +31,16 @@ export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  // const { loading, error } = useSelector((s: RootState) => s.auth);
+  const { showAlert } = useAlert();
+  const { error } = useSelector((s: RootState) => s.auth);
   const navigate = useNavigate();
+
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [accessToken, navigate]);
 
   return (
     <AuthLayout
@@ -58,7 +67,10 @@ export default function Signup() {
 
           setSubmitting(false);
           if (res.meta.requestStatus === "fulfilled") {
-            navigate("/login");
+            navigate("/dashboard");
+            showAlert("Registration successful..!", "success");
+          } else {
+            showAlert(error ?? "Registration failed!", "error");
           }
         }}
       >

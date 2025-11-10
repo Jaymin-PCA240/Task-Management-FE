@@ -1,13 +1,20 @@
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { TextField, Button, CircularProgress, InputAdornment, IconButton } from "@mui/material";
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { type AppDispatch } from "../app/store";
+import { type AppDispatch, type RootState } from "../app/store";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { loginThunk } from "../features/auth/authSlice";
 import { AuthLayout } from "../components/AuthLayout";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useAlert } from "../context/AlertContext";
 
 const LoginSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email required"),
@@ -19,6 +26,14 @@ export default function Login() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { showAlert } = useAlert();
+
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [accessToken, navigate]);
 
   return (
     <AuthLayout
@@ -28,13 +43,16 @@ export default function Login() {
       <Formik
         initialValues={{ email: "", password: "" }}
         validationSchema={LoginSchema}
-        onSubmit={async (values, { setErrors }) => {
+        onSubmit={async (values) => {
           setLoading(true);
           const res = await dispatch(loginThunk(values));
-          debugger;
           setLoading(false);
-          if (res.meta.requestStatus === "fulfilled") navigate("/dashboard");
-          else setErrors({ password: "Invalid credentials" });
+          if (res.meta.requestStatus === "fulfilled") {
+            showAlert("Login successful!", "success");
+            navigate("/dashboard");
+          } else {
+            showAlert("Invalid email or password", "error");
+          }
         }}
       >
         {({ values, handleChange, errors, touched }) => (

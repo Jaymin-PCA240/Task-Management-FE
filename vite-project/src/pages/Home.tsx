@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Logo } from "../components/Logo";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import type { RootState } from "../app/store";
+import { useSelector } from "react-redux";
 
 export default function Home() {
   const navigate = useNavigate();
-
+  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 relative">
       <Header />
@@ -19,7 +22,8 @@ export default function Home() {
           Manage your projects and daily tasks efficiently with a clean and
           modern dashboard.
         </p>
-        <div className="space-x-3">
+
+        {!accessToken && <div className="space-x-3">
           <Button
             variant="contained"
             color="primary"
@@ -34,7 +38,7 @@ export default function Home() {
           >
             Sign Up
           </Button>
-        </div>
+        </div>}
       </main>
       <Footer />
     </div>
