@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
-@layer components {
-  .input {
-    @apply w-full p-3 rounded-lg bg-white/70 border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none;
-  }
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
+

@@ -36,86 +36,96 @@ export default function Login() {
   }, [accessToken, navigate]);
 
   return (
-    <AuthLayout
-      title="Welcome Back 👋"
-      subtitle="Log in to continue managing your tasks"
-    >
-      <Formik
-        initialValues={{ email: "", password: "" }}
-        validationSchema={LoginSchema}
-        onSubmit={async (values) => {
-          setLoading(true);
-          const res = await dispatch(loginThunk(values));
-          setLoading(false);
-          if (res.meta.requestStatus === "fulfilled") {
-            showAlert("Login successful!", "success");
-            navigate("/dashboard");
-          } else {
-            showAlert("Invalid email or password", "error");
-          }
-        }}
+    <div className="w-full max-w-[1600px] space-y-10 flex items-center justify-center align-center">
+      <AuthLayout
+        title="Welcome Back 👋"
+        subtitle="Log in to continue managing your tasks"
       >
-        {({ values, handleChange, errors, touched }) => (
-          <Form className="space-y-4">
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              error={touched.email && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
-            />
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={values.password}
-              onChange={handleChange}
-              error={touched.password && Boolean(errors.password)}
-              helperText={touched.password && errors.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={LoginSchema}
+          onSubmit={async (values) => {
+            setLoading(true);
+            const res = await dispatch(loginThunk(values));
+            setLoading(false);
+            if (res.meta.requestStatus === "fulfilled") {
+              showAlert("Login successful!", "success");
+              navigate("/dashboard");
+            } else {
+              showAlert("Invalid email or password", "error");
+            }
+          }}
+        >
+          {({ values, handleChange, errors, touched }) => (
+            <Form className="space-y-4">
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                value={values.email}
+                onChange={handleChange}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={values.password}
+                onChange={handleChange}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
 
-            <Button
-              fullWidth
-              variant="contained"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? (
-                <CircularProgress size={22} color="inherit" />
-              ) : (
-                "Login"
-              )}
-            </Button>
-
-            <div className="flex justify-between text-sm mt-2">
-              <Link
-                to="/forgot-password"
-                className="text-blue-600 hover:underline"
+              <Button
+                fullWidth
+                variant="contained"
+                type="submit"
+                disabled={loading}
+                sx={{
+                  mt: 1,
+                  py: 1.2,
+                  textTransform: "none",
+                  fontWeight: 600,
+                  backgroundColor: "#6366F1",
+                  "&:hover": { backgroundColor: "#4F46E5" },
+                }}
               >
-                Forgot password?
-              </Link>
-              <Link to="/register" className="text-blue-600 hover:underline">
-                Create an account
-              </Link>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </AuthLayout>
+                {loading ? (
+                  <CircularProgress size={22} color="inherit" />
+                ) : (
+                  "Login"
+                )}
+              </Button>
+
+              <div className="flex justify-between text-sm mt-2">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-600 hover:underline"
+                >
+                  Forgot password?
+                </Link>
+                <Link to="/register" className="text-blue-600 hover:underline">
+                  Create an account
+                </Link>
+              </div>
+            </Form>
+          )}
+        </Formik>
+      </AuthLayout>
+    </div>
   );
 }

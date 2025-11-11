@@ -21,40 +21,73 @@ export default function VerifyOTP() {
   const { showAlert } = useAlert();
 
   return (
-    <AuthLayout title="Verify Code" subtitle="Enter the 6-digit code sent to your email">
-      <Formik
-        initialValues={{ email: initialEmail, otp: "" }}
-        validationSchema={Schema}
-        onSubmit={async (values) => {
-          const res: any = await dispatch(verifyOtpThunk({ email: values.email, otp: values.otp }));
-          if (res.meta.requestStatus === "fulfilled") {
-            const resetToken = res.payload?.data?.resetToken || res.payload?.resetToken || res.payload?.data?.token;
-            showAlert(res.payload.message || "OTP Verified.", "success")
-            navigate("/reset-password", { state: { resetToken } });
-          } else {
-            showAlert(res.payload || "OTP invalid", "error")
-          }
-        }}
+    <div className="w-full max-w-[1600px] space-y-10 flex items-center justify-center align-center">
+      <AuthLayout
+        title="Verify Code"
+        subtitle="Enter the 6-digit code sent to your email"
       >
-        {({ values, handleChange, errors, touched, isSubmitting }) => (
-          <Form className="space-y-4">
-            <TextField fullWidth label="Email" name="email" disabled={true} value={values.email} onChange={handleChange}
-              error={touched.email && Boolean(errors.email)} />
+        <Formik
+          initialValues={{ email: initialEmail, otp: "" }}
+          validationSchema={Schema}
+          onSubmit={async (values) => {
+            const res: any = await dispatch(
+              verifyOtpThunk({ email: values.email, otp: values.otp })
+            );
+            if (res.meta.requestStatus === "fulfilled") {
+              const resetToken =
+                res.payload?.data?.resetToken ||
+                res.payload?.resetToken ||
+                res.payload?.data?.token;
+              showAlert(res.payload.message || "OTP Verified.", "success");
+              navigate("/reset-password", { state: { resetToken } });
+            } else {
+              showAlert(res.payload || "OTP invalid", "error");
+            }
+          }}
+        >
+          {({ values, handleChange, errors, touched, isSubmitting }) => (
+            <Form className="space-y-4">
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                disabled={true}
+                value={values.email}
+                onChange={handleChange}
+                error={touched.email && Boolean(errors.email)}
+              />
 
-            <TextField fullWidth label="OTP" name="otp" value={values.otp} onChange={handleChange}
-              error={touched.otp && Boolean(errors.otp)} helperText={touched.otp && errors.otp} />
+              <TextField
+                fullWidth
+                label="OTP"
+                name="otp"
+                value={values.otp}
+                onChange={handleChange}
+                error={touched.otp && Boolean(errors.otp)}
+                helperText={touched.otp && errors.otp}
+              />
 
-            <Button type="submit" fullWidth variant="contained" disabled={isSubmitting}>
-              {isSubmitting ? <CircularProgress size={20} /> : "Verify OTP"}
-            </Button>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? <CircularProgress size={20} /> : "Verify OTP"}
+              </Button>
 
-            <Typography variant="body2" className="text-center">
-              <Link to="/forgot-password" className="text-blue-600 hover:underline">Resend OTP</Link>
-            </Typography>
-          </Form>
-        )}
-      </Formik>
-
-    </AuthLayout>
+              <Typography variant="body2" className="text-center">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-600 hover:underline"
+                >
+                  Resend OTP
+                </Link>
+              </Typography>
+            </Form>
+          )}
+        </Formik>
+      </AuthLayout>
+    </div>
   );
 }

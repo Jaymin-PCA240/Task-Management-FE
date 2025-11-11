@@ -18,6 +18,7 @@ export default function Header() {
         <nav className="flex items-center gap-4 text-black text-sm font-medium">
           {accessToken ? (
             <>
+              <Link to="/projects" className="hover:text-indigo-300">Projects</Link>
               <Link to="/dashboard" className="hover:text-indigo-300">Dashboard</Link>
               <button
                 onClick={() => dispatch(logoutThunk())}
@@ -30,7 +31,7 @@ export default function Header() {
             <>
               <Link to="/login" className="hover:text-indigo-300">Login</Link>
               <Link
-                to="/signup"
+                to="/register"
                 className="bg-indigo-500 px-3 py-1 rounded-md text-white hover:bg-indigo-600"
               >
                 Sign Up

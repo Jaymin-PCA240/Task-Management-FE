@@ -2,9 +2,13 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from '../features/auth/authSlice';
+import projectsReducer from '../features/projects/projectsSlice';
+import tasksReducer from '../features/tasks/tasksSlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  projects: projectsReducer,
+  tasks: tasksReducer,
 });
 
 const persistConfig = {

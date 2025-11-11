@@ -9,7 +9,6 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100">
       <Card className="w-full max-w-md shadow-lg rounded-2xl border border-gray-200">
         <CardContent>
           <Logo />
@@ -24,6 +23,5 @@ export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
           {children}
         </CardContent>
       </Card>
-    </div>
   );
 }
