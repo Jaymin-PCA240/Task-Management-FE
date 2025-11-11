@@ -71,7 +71,6 @@ export default function Signup() {
               navigate("/dashboard");
               showAlert("Registration successful..!", "success");
             } else {
-              debugger;
               showAlert(error ?? "Registration failed!", "error");
             }
           }}

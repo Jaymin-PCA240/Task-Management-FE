@@ -1,7 +1,5 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../app/store";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
 import { FaUsers, FaClipboardList, FaCheckCircle } from "react-icons/fa";
 
 export default function Dashboard() {
