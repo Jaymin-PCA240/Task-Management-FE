@@ -1,131 +1,118 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import api from '../../api/axiosInstance';
+import api from "../../api/axiosInstance";
 
-export interface Comment {
-  id: string;
-  authorId: string;
-  authorName?: string;
-  text: string;
-  createdAt?: string;
-}
-
-export interface Task {
-  _id: string;
-  projectId: string;
-  title: string;
-  description?: string;
-  status: "todo" | "inprogress" | "review" | "done";
-  assignee?: { id: string; name: string } | null;
-  comments?: Comment[];
-  createdAt?: string;
-}
-
-interface TasksState {
-  byProject: Record<string, Task[]>;
-  loading: boolean;
-  error?: string | null;
-}
-
-const initialState: TasksState = { byProject: {}, loading: false, error: null };
-
-// Thunks
 export const fetchTasksByProject = createAsyncThunk(
   "tasks/fetchByProject",
-  async (projectId: string) => {
-    const res = await api.get(`/projects/${projectId}/tasks`);
-    return { projectId, tasks: res.data.data as Task[] };
+  async (projectId: string, { rejectWithValue }) => {
+    try {
+      const res = await api.get(`/tasks/project/${projectId}`);
+      return res.data.data; // assuming APIResponse structure
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
 );
 
 export const createTask = createAsyncThunk(
   "tasks/create",
-  async (payload: { projectId: string; title: string; description?: string }) => {
-    const res = await api.post(`/projects/${payload.projectId}/tasks`, payload);
-    return res.data.data as Task;
+  async (payload: any, { rejectWithValue }) => {
+    try {
+      const res = await api.post("/tasks", payload);
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
 );
 
 export const updateTask = createAsyncThunk(
   "tasks/update",
-  async ({ id, body }: { id: string; body: Partial<Task> }) => {
-    const res = await api.put(`/tasks/${id}`, body);
-    return res.data.data as Task;
+  async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
+    try {
+      const res = await api.put(`/tasks/${id}`, data);
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
 );
 
-export const deleteTask = createAsyncThunk("tasks/delete", async (id: string) => {
-  await api.delete(`/tasks/${id}`);
-  return id;
-});
-
-export const addComment = createAsyncThunk(
-  "tasks/addComment",
-  async ({ taskId, text }: { taskId: string; text: string }) => {
-    const res = await api.post(`/tasks/${taskId}/comments`, { text });
-    return res.data.data as Comment & { taskId: string };
-  }
-);
-
-// move task status (drag & drop)
 export const moveTask = createAsyncThunk(
   "tasks/move",
-  async ({ id, status }: { id: string; status: Task["status"] }) => {
-    const res = await api.patch(`/tasks/${id}/move`, { status });
-    return res.data.data as Task;
+  async ({ id, status }: { id: string; status: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.patch(`/tasks/${id}/move`, { status });
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const deleteTask = createAsyncThunk(
+  "tasks/delete",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await api.delete(`/tasks/${id}`);
+      return id;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const commentTask = createAsyncThunk(
+  "tasks/comment",
+  async ({ id, text }: { id: string; text: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.post(`/tasks/${id}/comment`, { text });
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
   }
 );
 
 const tasksSlice = createSlice({
   name: "tasks",
-  initialState,
+  initialState: {
+    items: [] as any[],
+    loading: false,
+    error: null as any,
+  },
   reducers: {
     clearError(state) {
       state.error = null;
     },
   },
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder
-      .addCase(fetchTasksByProject.fulfilled, (s, a) => {
-        s.byProject[a.payload.projectId] = a.payload.tasks;
+      .addCase(fetchTasksByProject.fulfilled, (state, { payload }) => {
+        state.items = payload;
+        state.loading = false;
+        state.error = null;
       })
-      .addCase(createTask.fulfilled, (s, a) => {
-        const t = a.payload;
-        s.byProject[t.projectId] = s.byProject[t.projectId] || [];
-        s.byProject[t.projectId].push(t);
+      .addCase(fetchTasksByProject.pending, (state) => { state.loading = true; })
+      .addCase(fetchTasksByProject.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+
+      .addCase(createTask.fulfilled, (state, { payload }) => { state.items.unshift(payload); })
+      .addCase(updateTask.fulfilled, (state, { payload }) => {
+        const idx = state.items.findIndex(t => t._id === payload._id);
+        if (idx !== -1) state.items[idx] = payload;
       })
-      .addCase(updateTask.fulfilled, (s, a) => {
-        const t = a.payload;
-        const list = s.byProject[t.projectId] || [];
-        s.byProject[t.projectId] = list.map((x) => (x._id === t._id ? t : x));
+      .addCase(moveTask.fulfilled, (state, { payload }) => {
+        const idx = state.items.findIndex(t => t._id === payload._id);
+        if (idx !== -1) state.items[idx] = payload;
       })
-      .addCase(deleteTask.fulfilled, (s, a) => {
-        const id = a.payload;
-        for (const k of Object.keys(s.byProject)) {
-          s.byProject[k] = s.byProject[k].filter((t) => t._id !== id);
-        }
+      .addCase(deleteTask.fulfilled, (state, { payload }) => {
+        state.items = state.items.filter(t => t._id !== payload);
       })
-      .addCase(addComment.fulfilled, (s, a) => {
-        const c = a.payload as Comment & { taskId: string };
-        for (const k of Object.keys(s.byProject)) {
-          const t = s.byProject[k].find((x) => x._id === c.taskId);
-          if (t) {
-            t.comments = t.comments || [];
-            t.comments.push(c);
-            break;
-          }
-        }
-      })
-      .addCase(moveTask.fulfilled, (s, a) => {
-        const t = a.payload;
-        for (const k of Object.keys(s.byProject)) {
-          s.byProject[k] = s.byProject[k].filter((x) => x._id !== t._id);
-        }
-        s.byProject[t.projectId] = s.byProject[t.projectId] || [];
-        s.byProject[t.projectId].push(t);
+      .addCase(commentTask.fulfilled, (state, { payload }) => {
+        const idx = state.items.findIndex(t => t._id === payload._id);
+        if (idx !== -1) state.items[idx] = payload;
       });
-  },
+  }
 });
 
 export const { clearError } = tasksSlice.actions;
 export default tasksSlice.reducer;
-

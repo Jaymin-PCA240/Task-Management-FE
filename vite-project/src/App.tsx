@@ -4,12 +4,12 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import ProjectsPage from "./pages/ProjectList";
-import TaskBoard from "./pages/TaskBoard";
 import Home from "./pages/Home";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import Layout from "./layout/Layout";
+import BoardView from "./pages/BoardView";
 
 export default function App() {
   return (
@@ -38,10 +38,10 @@ export default function App() {
           }
         />
         <Route
-          path="/tasks/:projectId"
+          path="/projects/:projectId/board"
           element={
             <ProtectedRoute>
-              <TaskBoard projectId="" />
+              <BoardView />
             </ProtectedRoute>
           }
         />

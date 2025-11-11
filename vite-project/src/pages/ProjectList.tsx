@@ -69,7 +69,7 @@ export default function ProjectsPage() {
               className="bg-white shadow-md rounded-xl p-5 flex flex-col hover:shadow-lg transition-all cursor-pointer"
               onClick={() =>
                 navigate(
-                  generatePath("/tasks/:projectId", { projectId: project._id })
+                  generatePath("/projects/:projectId/board", { projectId: project._id })
                 )
               }
             >
