@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axiosInstance";
 
-// Define Auth State Type
 interface AuthState {
   user: any | null;
   accessToken: string | null;
@@ -32,7 +31,6 @@ export const registerThunk = createAsyncThunk(
   }
 );
 
-// Login User
 export const loginThunk = createAsyncThunk(
   "auth/login",
   async (data: any, thunkAPI) => {
@@ -47,7 +45,6 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
-// Refresh Token
 export const refreshTokenThunk = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
@@ -62,7 +59,6 @@ export const refreshTokenThunk = createAsyncThunk(
   }
 );
 
-// Logout User
 export const logoutThunk = createAsyncThunk(
   "auth/logout",
   async (_, thunkAPI) => {
@@ -128,6 +124,20 @@ export const resetPasswordThunk = createAsyncThunk(
   }
 );
 
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (data: { name: string }, { rejectWithValue }) => {
+    try {
+      const res = await api.put("/auth/update-profile", data);
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(
+        err.response?.data?.message || "profile update failed"
+      );
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -137,7 +147,6 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Login
     builder
       .addCase(loginThunk.pending, (state) => {
         state.loading = true;
@@ -153,7 +162,6 @@ const authSlice = createSlice({
         state.error = payload as string;
       });
 
-    // Register
     builder
       .addCase(registerThunk.pending, (state) => {
         state.loading = true;
@@ -169,7 +177,6 @@ const authSlice = createSlice({
         state.error = payload as string;
       });
 
-    // Refresh Token
     builder
       .addCase(refreshTokenThunk.pending, (state) => {
         state.loading = true;
@@ -183,12 +190,24 @@ const authSlice = createSlice({
         state.user = null;
       });
 
-    // Logout
     builder.addCase(logoutThunk.fulfilled, (state) => {
       state.user = null;
       state.accessToken = null;
       state.error = null;
     });
+    builder
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        debugger;
+        state.loading = false;
+        state.user = action.payload.data.user;
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Failed to load profile";
+      });
   },
 });
 

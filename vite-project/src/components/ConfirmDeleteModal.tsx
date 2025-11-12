@@ -23,8 +23,8 @@ export default function ConfirmDeleteModal({
       <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-md p-6 animate-fadeIn">
         <h2 className="text-xl font-semibold mb-3 text-gray-800">{title}</h2>
         <p className="text-gray-600 mb-6">
-          {message}{" this "}
-          {highlight && <span className="font-semibold text-red-600">{highlight}</span>} project ?
+          {message}{" "}
+          {highlight && <span className="font-semibold text-red-600">{highlight}</span>} ?
         </p>
         <div className="flex justify-end gap-3">
           <button
@@ -35,7 +35,7 @@ export default function ConfirmDeleteModal({
           </button>
           <button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            className="px-4 py-2 bg-gradient-to-r from-red-700 to-red-500 hover:to-red-400 text-white rounded-lg hover:bg-red-700 transition"
           >
             Delete
           </button>

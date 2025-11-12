@@ -10,6 +10,7 @@ import VerifyOTP from "./pages/VerifyOTP";
 import ResetPassword from "./pages/ResetPassword";
 import Layout from "./layout/Layout";
 import BoardView from "./pages/BoardView";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -21,6 +22,14 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={

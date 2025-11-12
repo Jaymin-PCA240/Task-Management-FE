@@ -5,7 +5,7 @@ export const fetchTasksByProject = createAsyncThunk(
   "tasks/fetchByProject",
   async (projectId: string, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/tasks/project/${projectId}`);
+      const res = await api.get(`/tasks/task-by-project/${projectId}`);
       return res.data.data; // assuming APIResponse structure
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
@@ -17,7 +17,7 @@ export const createTask = createAsyncThunk(
   "tasks/create",
   async (payload: any, { rejectWithValue }) => {
     try {
-      const res = await api.post("/tasks", payload);
+      const res = await api.post("/tasks/create-task", payload);
       return res.data.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
@@ -29,7 +29,7 @@ export const updateTask = createAsyncThunk(
   "tasks/update",
   async ({ id, data }: { id: string; data: any }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/tasks/${id}`, data);
+      const res = await api.put(`/tasks/update-task/${id}`, data);
       return res.data.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
@@ -56,7 +56,7 @@ export const deleteTask = createAsyncThunk(
   "tasks/delete",
   async (id: string, { rejectWithValue }) => {
     try {
-      await api.delete(`/tasks/${id}`);
+      await api.delete(`/tasks/delete-task/${id}`);
       return id;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
@@ -101,26 +101,30 @@ const tasksSlice = createSlice({
       .addCase(fetchTasksByProject.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      })
-
-      .addCase(createTask.fulfilled, (state, { payload }) => {
-        state.items.unshift(payload);
-      })
-      .addCase(updateTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex((t) => t._id === payload._id);
-        if (idx !== -1) state.items[idx] = payload;
-      })
-      .addCase(moveTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex((t) => t._id === payload._id);
-        if (idx !== -1) state.items[idx] = payload;
-      })
-      .addCase(deleteTask.fulfilled, (state, { payload }) => {
-        state.items = state.items.filter((t) => t._id !== payload);
-      })
-      .addCase(commentTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex((t) => t._id === payload._id);
-        if (idx !== -1) state.items[idx] = payload;
       });
+    builder.addCase(createTask.fulfilled, (state, { payload }) => {
+      state.items.unshift(payload);
+      state.loading = false;
+    });
+    builder.addCase(updateTask.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      const idx = state.items.findIndex((t) => t._id === payload._id);
+      if (idx !== -1) state.items[idx] = payload;
+    });
+    builder.addCase(moveTask.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      const idx = state.items.findIndex((t) => t._id === payload._id);
+      if (idx !== -1) state.items[idx] = payload;
+    });
+    builder.addCase(deleteTask.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.items = state.items.filter((t) => t._id !== payload);
+    });
+    builder.addCase(commentTask.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      const idx = state.items.findIndex((t) => t._id === payload._id);
+      if (idx !== -1) state.items[idx] = payload;
+    });
   },
 });
 

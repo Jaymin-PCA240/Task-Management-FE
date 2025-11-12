@@ -37,102 +37,106 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="w-full max-w-[1600px]">
-      <div className="bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-10 px-8 mb-8">
-        <h1 className="text-3xl font-bold mb-2">Your Projects</h1>
-        <p className="text-white/90">
-          Organize and manage your projects with your team.
-        </p>
-        <button
-          onClick={() => {
-            setEditing(null);
-            setOpen(true);
-          }}
-          className="mt-6 bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
-        >
-          + Create Project
-        </button>
-      </div>
-      {loading ? (
-        <Loader />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {projects.length === 0 && (
-            <p className="text-gray-500 col-span-full text-center">
-              No projects found.
+    <>
+      <Loader loading={loading} message="Fetching your data..." size="lg" />
+      {!loading && (
+        <div className="w-full max-w-[1600px]">
+          <div className="bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-10 px-8 mb-8">
+            <h1 className="text-3xl font-bold mb-2">Your Projects</h1>
+            <p className="text-white/90">
+              Organize and manage your projects with your team.
             </p>
-          )}
-
-          {projects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-white shadow-md rounded-xl p-5 flex flex-col hover:shadow-lg transition-all cursor-pointer"
-              onClick={() =>
-                navigate(
-                  generatePath("/projects/:projectId/board", { projectId: project._id })
-                )
-              }
+            <button
+              onClick={() => {
+                setEditing(null);
+                setOpen(true);
+              }}
+              className="mt-6 bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
             >
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2">
-                  <FiFolder className="text-blue-600 text-lg" />
-                  <h3 className="text-lg font-semibold">{project.name}</h3>
-                </div>
-                {currentUser.id == project?.owner?._id && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditing(project);
-                        setOpen(true);
-                      }}
-                      className="text-gray-600 hover:text-blue-600"
-                    >
-                      <FiEdit2 size={18} />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelected(project);
-                        setConfirmOpen(true);
-                      }}
-                      className="text-gray-600 hover:text-red-600"
-                    >
-                      <FiTrash2 size={18} />
-                    </button>
-                  </div>
-                )}
-              </div>
+              + Create Project
+            </button>
+          </div>
 
-              <p className="text-sm text-gray-600 line-clamp-2">
-                {project.description}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {projects.length === 0 && (
+              <p className="text-gray-500 col-span-full text-center">
+                No projects found.
               </p>
+            )}
 
-              <div className="mt-4 flex justify-between text-sm text-gray-500">
-                <span>👤 {project?.owner?.name || "Unknown"}</span>
-                <span>
-                  {format(new Date(project.createdAt ?? ""), "MMM dd, yyyy")}
-                </span>
+            {projects.map((project) => (
+              <div
+                key={project._id}
+                className="bg-white shadow-md rounded-xl p-5 flex flex-col hover:shadow-lg transition-all cursor-pointer"
+                onClick={() =>
+                  navigate(
+                    generatePath("/projects/:projectId/board", {
+                      projectId: project._id,
+                    })
+                  )
+                }
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2">
+                    <FiFolder className="text-blue-600 text-lg" />
+                    <h3 className="text-lg font-semibold">{project.name}</h3>
+                  </div>
+                  {currentUser.id == project?.owner?._id && (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditing(project);
+                          setOpen(true);
+                        }}
+                        className="text-gray-600 hover:text-blue-600"
+                      >
+                        <FiEdit2 size={18} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelected(project);
+                          setConfirmOpen(true);
+                        }}
+                        className="text-gray-600 hover:text-red-600"
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-sm text-gray-600 line-clamp-2">
+                  {project.description}
+                </p>
+
+                <div className="mt-4 flex justify-between text-sm text-gray-500">
+                  <span>👤 {project?.owner?.name || "Unknown"}</span>
+                  <span>
+                    {format(new Date(project.createdAt ?? ""), "MMM dd, yyyy")}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <ProjectModal
+            open={open}
+            onClose={() => setOpen(false)}
+            initial={editing}
+          />
+
+          <ConfirmDeleteModal
+            open={confirmOpen}
+            title="Delete Project"
+            message="Are you sure you want to delete this project"
+            highlight={selected?.name}
+            onCancel={() => setConfirmOpen(false)}
+            onConfirm={handleDelete}
+          />
         </div>
       )}
-
-      <ProjectModal
-        open={open}
-        onClose={() => setOpen(false)}
-        initial={editing}
-      />
-
-      <ConfirmDeleteModal
-        open={confirmOpen}
-        title="Delete Project"
-        message="Are you sure you want to delete"
-        highlight={selected?.name}
-        onCancel={() => setConfirmOpen(false)}
-        onConfirm={handleDelete}
-      />
-    </div>
+    </>
   );
 }
