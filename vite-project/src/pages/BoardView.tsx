@@ -11,15 +11,14 @@ import type { AppDispatch, RootState } from "../app/store";
 import {
   fetchTasksByProject,
   moveTask,
-  createTask,
   deleteTask,
-  updateTask,
 } from "../features/tasks/tasksSlice";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import InviteMemberModal from "../components/InviteMemberModal";
 // import ActivityList from "../components/ActivityList";
 import { FiPlus } from "react-icons/fi";
+import Loader from "../components/Loader";
 
 const BoardView: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -70,67 +69,69 @@ const BoardView: React.FC = () => {
           </button>
           <button
             onClick={() => setOpenInvite(true)}
-            className="px-3 py-2 border rounded-lg"
+            className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
           >
             Invite
           </button>
         </div>
       </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {(["todo", "in-progress", "done"] as const).map((status) => (
+              <Droppable droppableId={status} key={status}>
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className="bg-gray-50 rounded-lg p-4 min-h-[300px] shadow-sm"
+                  >
+                    <h3 className="font-medium mb-3 capitalize">
+                      {status === "todo"
+                        ? "To Do"
+                        : status === "in-progress"
+                        ? "In Progress"
+                        : "Done"}
+                    </h3>
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {(["todo", "in-progress", "done"] as const).map((status) => (
-            <Droppable droppableId={status} key={status}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="bg-gray-50 rounded-lg p-4 min-h-[300px] shadow-sm"
-                >
-                  <h3 className="font-medium mb-3 capitalize">
-                    {status === "todo"
-                      ? "To Do"
-                      : status === "in-progress"
-                      ? "In Progress"
-                      : "Done"}
-                  </h3>
+                    {columns[status].map((task: any, idx: number) => (
+                      <Draggable
+                        key={task._id}
+                        draggableId={task._id}
+                        index={idx}
+                      >
+                        {(prov) => (
+                          <div
+                            ref={prov.innerRef}
+                            {...prov.draggableProps}
+                            {...prov.dragHandleProps}
+                            className="mb-3"
+                          >
+                            <TaskCard
+                              task={task}
+                              onEdit={() => {
+                                setEditingTask(task);
+                                setOpenTaskModal(true);
+                              }}
+                              onDelete={() =>
+                                dispatch(deleteTask(task._id) as any)
+                              }
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
 
-                  {columns[status].map((task: any, idx: number) => (
-                    <Draggable
-                      key={task._id}
-                      draggableId={task._id}
-                      index={idx}
-                    >
-                      {(prov) => (
-                        <div
-                          ref={prov.innerRef}
-                          {...prov.draggableProps}
-                          {...prov.dragHandleProps}
-                          className="mb-3"
-                        >
-                          <TaskCard
-                            task={task}
-                            onEdit={() => {
-                              setEditingTask(task);
-                              setOpenTaskModal(true);
-                            }}
-                            onDelete={() =>
-                              dispatch(deleteTask(task._id) as any)
-                            }
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          ))}
-        </div>
-      </DragDropContext>
-
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            ))}
+          </div>
+        </DragDropContext>
+      )}
       <TaskModal
         open={openTaskModal}
         initial={editingTask}

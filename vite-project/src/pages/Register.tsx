@@ -149,13 +149,12 @@ export default function Signup() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                className="bg-gradient-to-r from-blue-700 to-blue-500"
                 sx={{
                   mt: 1,
                   py: 1.2,
                   textTransform: "none",
                   fontWeight: 600,
-                  backgroundColor: "#6366F1",
-                  "&:hover": { backgroundColor: "#4F46E5" },
                 }}
               >
                 Sign Up

@@ -39,7 +39,10 @@ export const updateTask = createAsyncThunk(
 
 export const moveTask = createAsyncThunk(
   "tasks/move",
-  async ({ id, status }: { id: string; status: string }, { rejectWithValue }) => {
+  async (
+    { id, status }: { id: string; status: string },
+    { rejectWithValue }
+  ) => {
     try {
       const res = await api.patch(`/tasks/${id}/move`, { status });
       return res.data.data;
@@ -92,26 +95,33 @@ const tasksSlice = createSlice({
         state.loading = false;
         state.error = null;
       })
-      .addCase(fetchTasksByProject.pending, (state) => { state.loading = true; })
-      .addCase(fetchTasksByProject.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+      .addCase(fetchTasksByProject.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchTasksByProject.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
-      .addCase(createTask.fulfilled, (state, { payload }) => { state.items.unshift(payload); })
+      .addCase(createTask.fulfilled, (state, { payload }) => {
+        state.items.unshift(payload);
+      })
       .addCase(updateTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex(t => t._id === payload._id);
+        const idx = state.items.findIndex((t) => t._id === payload._id);
         if (idx !== -1) state.items[idx] = payload;
       })
       .addCase(moveTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex(t => t._id === payload._id);
+        const idx = state.items.findIndex((t) => t._id === payload._id);
         if (idx !== -1) state.items[idx] = payload;
       })
       .addCase(deleteTask.fulfilled, (state, { payload }) => {
-        state.items = state.items.filter(t => t._id !== payload);
+        state.items = state.items.filter((t) => t._id !== payload);
       })
       .addCase(commentTask.fulfilled, (state, { payload }) => {
-        const idx = state.items.findIndex(t => t._id === payload._id);
+        const idx = state.items.findIndex((t) => t._id === payload._id);
         if (idx !== -1) state.items[idx] = payload;
       });
-  }
+  },
 });
 
 export const { clearError } = tasksSlice.actions;

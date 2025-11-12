@@ -17,7 +17,7 @@ const TaskCard = ({ task, onEdit, onDelete }: any) => {
           <div className="flex gap-2">
             <button onClick={onEdit} className="text-gray-600 hover:text-blue-600"><FiEdit2 /></button>
             <button onClick={onDelete} className="text-gray-600 hover:text-red-600"><FiTrash2 /></button>
-            <button onClick={() => setShowComments(s => !s)} className="text-gray-600 hover:text-green-600"><FiMessageSquare /></button>
+            <button onClick={() => setShowComments(s => !s)} className="text-gray-600 hover:text-blue-600"><FiMessageSquare /></button>
           </div>
           <span className="text-xs text-gray-400">{formatDistanceToNow(new Date(task.createdAt), { addSuffix: true })}</span>
         </div>

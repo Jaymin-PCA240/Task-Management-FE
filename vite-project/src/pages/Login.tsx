@@ -17,8 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../context/AlertContext";
 
 const LoginSchema = Yup.object({
-  email: Yup.string().email("Invalid email").required("Email required"),
-  password: Yup.string().required("Password required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
 export default function Login() {
@@ -95,13 +95,12 @@ export default function Login() {
                 variant="contained"
                 type="submit"
                 disabled={loading}
+                className="bg-gradient-to-r from-blue-700 to-blue-500 hover:to-blue-400"
                 sx={{
                   mt: 1,
                   py: 1.2,
                   textTransform: "none",
                   fontWeight: 600,
-                  backgroundColor: "#6366F1",
-                  "&:hover": { backgroundColor: "#4F46E5" },
                 }}
               >
                 {loading ? (

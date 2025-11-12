@@ -12,7 +12,7 @@ export function AuthLayout({ title, subtitle, children }: AuthLayoutProps) {
       <Card className="w-full max-w-md shadow-lg rounded-2xl border border-gray-200">
         <CardContent>
           <Logo />
-          <Typography variant="h5" className="text-center font-semibold mb-2 text-gray-800">
+          <Typography variant="h5" className="text-center font-semibold mb-2 text-gray-800 ">
             {title}
           </Typography>
           {subtitle && (

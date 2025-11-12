@@ -30,7 +30,7 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
               </div>
               <div className="flex justify-end gap-2">
                 <button type="button" onClick={onClose} className="px-4 py-2 border rounded">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">Invite</button>
+                <button type="submit" className="px-4 py-2 bg-gradient-to-r from-blue-700 to-blue-500 text-white rounded">Invite</button>
               </div>
             </Form>
           )}

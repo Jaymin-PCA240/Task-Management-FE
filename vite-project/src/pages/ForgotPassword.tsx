@@ -56,6 +56,7 @@ export default function ForgotPassword() {
                 fullWidth
                 variant="contained"
                 disabled={isSubmitting}
+                className="bg-gradient-to-r from-blue-700 to-blue-500 hover:to-blue-400"
               >
                 {isSubmitting ? <CircularProgress size={20} /> : "Send OTP"}
               </Button>

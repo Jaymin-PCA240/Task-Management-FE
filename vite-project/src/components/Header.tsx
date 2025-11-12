@@ -11,8 +11,8 @@ export default function Header() {
     <header className="fixed top-0 left-0 w-full z-50 bg-white/10 backdrop-blur-lg border-b border-white/20">
       <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
         <Link to="/" className="flex items-center gap-2 text-black font-semibold text-lg">
-          <img src="/logo.svg" alt="TaskFlow Logo" className="w-8 h-8" />
-          TaskFlow
+          <img src="/logo.svg" alt="TaskFlow Logo" className="w-8 h-8 " />
+          <span className="bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent hover:from-blue-800 hover:to-blue-600 transition-colors duration-300">TaskFlow</span>
         </Link>
 
         <nav className="flex items-center gap-4 text-black text-sm font-medium">
@@ -22,7 +22,7 @@ export default function Header() {
               <Link to="/dashboard" className="hover:text-indigo-300">Dashboard</Link>
               <button
                 onClick={() => dispatch(logoutThunk())}
-                className="bg-red-500 px-3 py-1 rounded-md text-black hover:bg-red-600"
+                className="px-3 py-1 rounded-md text-black bg-gradient-to-r text-white from-red-700 to-red-500 hover:to-red-400 "
               >
                 Logout
               </button>
@@ -32,7 +32,7 @@ export default function Header() {
               <Link to="/login" className="hover:text-indigo-300">Login</Link>
               <Link
                 to="/register"
-                className="bg-indigo-500 px-3 py-1 rounded-md text-white hover:bg-indigo-600"
+                className="bg-gradient-to-r from-blue-700 to-blue-500 px-3 py-1 rounded-md text-white hover:to-blue-600"
               >
                 Sign Up
               </Link>

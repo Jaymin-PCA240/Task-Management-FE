@@ -24,6 +24,7 @@ export default function Home() {
           <Button
             variant="contained"
             color="primary"
+            className="bg-gradient-to-r from-blue-700 to-blue-500 hover:to-blue-400"
             onClick={() => navigate("/login")}
           >
             Login
