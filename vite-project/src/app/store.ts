@@ -4,11 +4,13 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from '../features/auth/authSlice';
 import projectsReducer from '../features/projects/projectsSlice';
 import tasksReducer from '../features/tasks/tasksSlice';
+import activityReducer from '../features/activity/activitySlice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   projects: projectsReducer,
   tasks: tasksReducer,
+  activity: activityReducer,
 });
 
 const persistConfig = {

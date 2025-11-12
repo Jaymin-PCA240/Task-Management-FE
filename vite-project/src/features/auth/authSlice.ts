@@ -8,7 +8,6 @@ interface AuthState {
   error: string | null;
 }
 
-// Initial State
 const initialState: AuthState = {
   user: null,
   accessToken: null,
@@ -16,7 +15,6 @@ const initialState: AuthState = {
   error: null,
 };
 
-// Register User
 export const registerThunk = createAsyncThunk(
   "auth/register",
   async (data: any, thunkAPI) => {
@@ -200,7 +198,6 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
-        debugger;
         state.loading = false;
         state.user = action.payload.data.user;
       })

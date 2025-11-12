@@ -85,16 +85,34 @@ export const deleteProject = createAsyncThunk(
   }
 );
 
-export const inviteMember = createAsyncThunk(
-  "projects/invite",
-  async ({ id, email }: { id: string; email: string }, thunkAPI) => {
+export const searchUsersToInvite = createAsyncThunk(
+  "projectInvite/searchUsers",
+  async (
+    { projectId, query }: { projectId: string; query: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await api.post(`/projects/${id}/invite`, { email });
+      const res = await api.get(`/projects/${projectId}/invite/search`, {
+        params: { query },
+      });
       return res.data.data;
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Invite member failed"
-      );
+      return rejectWithValue(err.response?.data?.message || "Search failed");
+    }
+  }
+);
+
+export const inviteMember = createAsyncThunk(
+  "projectInvite/inviteMember",
+  async (
+    { projectId, email }: { projectId: string; email: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await api.post(`/projects/${projectId}/invite`, { email });
+      return res.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Invite failed");
     }
   }
 );
@@ -183,6 +201,32 @@ const projectsSlice = createSlice({
         state.members = action.payload;
       })
       .addCase(fetchProjectMembers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+    builder
+      // Search users
+      .addCase(searchUsersToInvite.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(searchUsersToInvite.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.users = action.payload;
+      })
+      .addCase(searchUsersToInvite.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      // Invite member
+      .addCase(inviteMember.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(inviteMember.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(inviteMember.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

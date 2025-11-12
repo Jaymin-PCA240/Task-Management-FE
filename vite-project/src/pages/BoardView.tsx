@@ -15,6 +15,7 @@ import InviteMemberModal from "../components/InviteMemberModal";
 // import ActivityList from "../components/ActivityList";
 import { FiPlus } from "react-icons/fi";
 import Loader from "../components/Loader";
+import ActivityLogModal from "../components/ActivityLogModal";
 
 const BoardView: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -23,6 +24,7 @@ const BoardView: React.FC = () => {
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
 
   useEffect(() => {
     if (projectId) dispatch(fetchTasksByProject(projectId));
@@ -53,96 +55,106 @@ const BoardView: React.FC = () => {
     <>
       <Loader loading={loading} message="Fetching your data..." size="lg" />
       {!loading && (
-        <div className="w-full max-w-[1600px]">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-semibold">Board</h2>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => {
-                  setEditingTask(null);
-                  setOpenTaskModal(true);
-                }}
-                className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-              >
-                <FiPlus /> Add Task
-              </button>
-              <button
-                onClick={() => setOpenInvite(true)}
-                className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
-              >
-                Invite
-              </button>
+        <>
+          <div className="w-full max-w-[1600px]">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-semibold">Board</h2>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    setEditingTask(null);
+                    setOpenTaskModal(true);
+                  }}
+                  className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                >
+                  <FiPlus /> Add Task
+                </button>
+                <button
+                  onClick={() => setOpenInvite(true)}
+                  className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
+                >
+                  Invite
+                </button>
+                <button
+                  onClick={() => setShowActivity(true)}
+                  className="bg-gradient-to-r from-orange-700 to-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                >
+                  View Activity
+                </button>
+              </div>
             </div>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {(["todo", "in-progress", "in-review", "done"] as const).map(
+                  (status) => (
+                    <Droppable droppableId={status} key={status}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className="bg-gray-50 rounded-lg p-4 min-h-[300px] shadow-sm"
+                        >
+                          <h3 className="font-medium mb-3 capitalize">
+                            {status === "todo"
+                              ? "To Do"
+                              : status === "in-progress"
+                              ? "In Progress"
+                              : status === "in-review"
+                              ? "In Review"
+                              : "Done"}
+                          </h3>
+
+                          {columns[status].map((task: any, idx: number) => (
+                            <Draggable
+                              key={task._id}
+                              draggableId={task._id}
+                              index={idx}
+                            >
+                              {(prov) => (
+                                <div
+                                  ref={prov.innerRef}
+                                  {...prov.draggableProps}
+                                  {...prov.dragHandleProps}
+                                  className="mb-3"
+                                >
+                                  <TaskCard
+                                    task={task}
+                                    onEdit={() => {
+                                      setEditingTask(task);
+                                      setOpenTaskModal(true);
+                                    }}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  )
+                )}
+              </div>
+            </DragDropContext>
+            <TaskModal
+              open={openTaskModal}
+              initial={editingTask}
+              onClose={() => setOpenTaskModal(false)}
+              projectId={projectId}
+            />
+            <InviteMemberModal
+              open={openInvite}
+              onClose={() => setOpenInvite(false)}
+              projectId={projectId}
+            />
           </div>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {(["todo", "in-progress", "in-review", "done"] as const).map(
-                (status) => (
-                  <Droppable droppableId={status} key={status}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="bg-gray-50 rounded-lg p-4 min-h-[300px] shadow-sm"
-                      >
-                        <h3 className="font-medium mb-3 capitalize">
-                          {status === "todo"
-                            ? "To Do"
-                            : status === "in-progress"
-                            ? "In Progress"
-                            : status === "in-review"
-                            ? "In Review"
-                            : "Done"}
-                        </h3>
-
-                        {columns[status].map((task: any, idx: number) => (
-                          <Draggable
-                            key={task._id}
-                            draggableId={task._id}
-                            index={idx}
-                          >
-                            {(prov) => (
-                              <div
-                                ref={prov.innerRef}
-                                {...prov.draggableProps}
-                                {...prov.dragHandleProps}
-                                className="mb-3"
-                              >
-                                <TaskCard
-                                  task={task}
-                                  onEdit={() => {
-                                    setEditingTask(task);
-                                    setOpenTaskModal(true);
-                                  }}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                )
-              )}
-            </div>
-          </DragDropContext>
-          <TaskModal
-            open={openTaskModal}
-            initial={editingTask}
-            onClose={() => setOpenTaskModal(false)}
+          <ActivityLogModal
+            open={showActivity}
+            onClose={() => setShowActivity(false)}
             projectId={projectId}
           />
-          <InviteMemberModal
-            open={openInvite}
-            onClose={() => setOpenInvite(false)}
-            projectId={projectId}
-          />
-          <div className="mt-6">
-            {/* <ActivityList projectId={projectId} /> */}
-          </div>
-        </div>
+        </>
       )}
     </>
   );

@@ -6,6 +6,7 @@ import { createTask, updateTask } from "../features/tasks/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjectMembers } from "../features/projects/projectsSlice";
 import { ChevronDown, Check } from "lucide-react"; //
+import { useAlert } from "../context/AlertContext";
 
 const TaskSchema = Yup.object({
   title: Yup.string().required("Title is required"),
@@ -19,6 +20,7 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
   const { members } = useSelector((s: RootState) => s.projects);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     if (projectId) dispatch(fetchProjectMembers(projectId));
@@ -65,9 +67,21 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
               assignees: values.assignees ? [values.assignees] : [],
             };
             if (initial) {
-              await dispatch(updateTask({ id: initial._id, data }) as any);
+              const res = await dispatch(
+                updateTask({ id: initial._id, data }) as any
+              );
+              if (res.meta.requestStatus === "fulfilled") {
+                showAlert("Task update successful!", "success");
+              } else {
+                showAlert("Task update failed", "error");
+              }
             } else {
-              await dispatch(createTask(data) as any);
+              const res = await dispatch(createTask(data) as any);
+              if (res.meta.requestStatus === "fulfilled") {
+                showAlert("Task create successful!", "success");
+              } else {
+                showAlert("Task create failed", "error");
+              }
             }
             setSubmitting(false);
             onClose();
@@ -104,6 +118,7 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
                 >
                   <option value="todo">To Do</option>
                   <option value="in-progress">In Progress</option>
+                  <option value="in-review">In Review</option>
                   <option value="done">Done</option>
                 </Field>
               </div>
