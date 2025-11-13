@@ -21,7 +21,7 @@ const ActivityLogModal = ({ open, onClose, projectId }: any) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-xl p-6 w-[95%] max-w-3xl shadow-lg">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">Activity Logs</h3>
+          <h3 className="text-lg font-semibold">Recent Activity</h3>
           <button
             onClick={() => {
               dispatch(clearActivityLogs());
@@ -41,10 +41,10 @@ const ActivityLogModal = ({ open, onClose, projectId }: any) => {
           <p className="text-center text-gray-500 py-6">No activity yet</p>
         ) : (
           <div className="border rounded-lg overflow-hidden">
-            <div className="grid grid-cols-3 bg-gray-100 text-sm font-semibold text-gray-700 px-4 py-2">
+            <div className="grid grid-cols-3 text-sm font-semibold bg-gradient-to-r from-blue-600 to-blue-400 text-white px-4 py-2">
               <span>Action</span>
               <span>User</span>
-              <span>Time</span>
+              <span className="text-right">Time</span>
             </div>
 
             <div className="max-h-80 overflow-y-auto divide-y">

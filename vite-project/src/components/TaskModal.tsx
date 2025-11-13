@@ -12,7 +12,7 @@ const TaskSchema = Yup.object({
   title: Yup.string().required("Title is required"),
   description: Yup.string(),
   assignees: Yup.string().nullable(),
-  status: Yup.string().oneOf(["todo", "in-progress", "done"]),
+  status: Yup.string().oneOf(["todo", "in-progress", "in-review", "done"]),
 });
 
 const TaskModal = ({ open, onClose, initial, projectId }: any) => {

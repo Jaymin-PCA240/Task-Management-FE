@@ -12,7 +12,6 @@ import { fetchTasksByProject, moveTask } from "../features/tasks/tasksSlice";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import InviteMemberModal from "../components/InviteMemberModal";
-// import ActivityList from "../components/ActivityList";
 import { FiPlus } from "react-icons/fi";
 import Loader from "../components/Loader";
 import ActivityLogModal from "../components/ActivityLogModal";
@@ -21,6 +20,7 @@ const BoardView: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
+  const { user } = useSelector((state: RootState) => state.auth);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
@@ -30,7 +30,6 @@ const BoardView: React.FC = () => {
     if (projectId) dispatch(fetchTasksByProject(projectId));
   }, [dispatch, projectId]);
 
-  // group tasks by status
   const columns = useMemo(() => {
     return {
       todo: tasks.filter((t) => t.status === "todo"),
@@ -58,23 +57,27 @@ const BoardView: React.FC = () => {
         <>
           <div className="w-full max-w-[1600px]">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold">Board</h2>
+              <h2 className="text-2xl font-semibold">{tasks[0].project.name}</h2>
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => {
-                    setEditingTask(null);
-                    setOpenTaskModal(true);
-                  }}
-                  className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-                >
-                  <FiPlus /> Add Task
-                </button>
-                <button
-                  onClick={() => setOpenInvite(true)}
-                  className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
-                >
-                  Invite
-                </button>
+                {user.id === tasks[0].project.owner && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingTask(null);
+                        setOpenTaskModal(true);
+                      }}
+                      className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <FiPlus /> Add Task
+                    </button>
+                    <button
+                      onClick={() => setOpenInvite(true)}
+                      className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
+                    >
+                      Invite
+                    </button>
+                  </>
+                )}
                 <button
                   onClick={() => setShowActivity(true)}
                   className="bg-gradient-to-r from-orange-700 to-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
@@ -84,7 +87,7 @@ const BoardView: React.FC = () => {
               </div>
             </div>
             <DragDropContext onDragEnd={onDragEnd}>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {(["todo", "in-progress", "in-review", "done"] as const).map(
                   (status) => (
                     <Droppable droppableId={status} key={status}>

@@ -68,7 +68,49 @@ export const commentTask = createAsyncThunk(
   "tasks/comment",
   async ({ id, text }: { id: string; text: string }, { rejectWithValue }) => {
     try {
-      const res = await api.post(`/tasks/${id}/comment`, { text });
+      const res = await api.post(`/tasks/${id}/add-comment`, { text });
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const editComment = createAsyncThunk(
+  "tasks/editComment",
+  async (
+    {
+      taskId,
+      commentId,
+      text,
+    }: {
+      taskId: string;
+      commentId: string;
+      text: string;
+    },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await api.put(`/tasks/${taskId}/edit-comment/${commentId}`, {
+        text,
+      });
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "tasks/deleteComment",
+  async (
+    { taskId, commentId }: { taskId: string; commentId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const res = await api.delete(
+        `/tasks/${taskId}/delete-comment/${commentId}`
+      );
       return res.data.data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);
@@ -124,6 +166,20 @@ const tasksSlice = createSlice({
       state.loading = false;
       const idx = state.items.findIndex((t) => t._id === payload._id);
       if (idx !== -1) state.items[idx] = payload;
+    });
+    builder.addCase(editComment.fulfilled, (state, action) => {
+      state.loading = false;
+      const updated = action.payload;
+      state.items = state.items.map((t) =>
+        t._id === updated._id ? updated : t
+      );
+    })
+    builder.addCase(deleteComment.fulfilled, (state, action) => {
+      state.loading = false;
+      const updated = action.payload;
+      state.items = state.items.map((t) =>
+        t._id === updated._id ? updated : t
+      );
     });
   },
 });

@@ -35,7 +35,7 @@ const TaskCard = ({ task, onEdit }: any) => {
         </div>
         <div className="flex flex-col items-end gap-2">
           <div className="flex gap-2">
-            {currentUser.id && (
+            {currentUser.id === task.project.owner && (
               <>
                 {" "}
                 <button

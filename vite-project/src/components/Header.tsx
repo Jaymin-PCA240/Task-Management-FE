@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch } from "../app/store";
 import { logoutThunk } from "../features/auth/authSlice";
-import { ChevronDown, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 
 export default function Header() {
   const { user, accessToken } = useSelector((state: RootState) => state.auth);
@@ -35,7 +35,7 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
-      <div className="mx-auto w-full max-w-[1800px] flex items-center justify-between px-4 py-3">
+      <div className="mx-auto w-full max-w-[1600px] flex items-center justify-between px-4 md:px-10 py-3">
         {/* Left Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src="/logo.svg" alt="BaseTeam Logo" className="w-8 h-8" />
@@ -46,7 +46,7 @@ export default function Header() {
 
         {/* Center Nav */}
         {accessToken && (
-          <div className="hidden md:flex items-center gap-6 text-gray-700 font-medium">
+          <div className="flex items-center gap-2 md:gap-6 text-gray-700 font-medium">
             <Link
               to="/dashboard"
               className="hover:text-blue-600 transition-colors duration-200"
@@ -114,24 +114,6 @@ export default function Header() {
           </div>
         )}
       </div>
-
-      {/* Mobile Center Nav */}
-      {accessToken && (
-        <div className="flex md:hidden justify-center gap-6 pb-2 border-t bg-gray-50 text-gray-700 font-medium">
-          <Link
-            to="/dashboard"
-            className="hover:text-blue-600 transition-colors duration-200 py-2"
-          >
-            Dashboard
-          </Link>
-          <Link
-            to="/projects"
-            className="hover:text-blue-600 transition-colors duration-200 py-2"
-          >
-            Projects
-          </Link>
-        </div>
-      )}
     </header>
   );
 }
