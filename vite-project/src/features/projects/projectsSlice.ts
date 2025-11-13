@@ -1,7 +1,6 @@
 import {
   createSlice,
   createAsyncThunk,
-  type PayloadAction,
 } from "@reduxjs/toolkit";
 import api from "../../api/axiosInstance";
 
@@ -10,20 +9,20 @@ export interface Project {
   name: string;
   description?: string;
   owner: string;
-  members?: { id: string; email: string }[];
+  members: { id: string; email: string }[];
   createdAt?: string;
 }
 
 interface ProjectsState {
   projects: Project[];
-  members: [];
+  project: Project | null;
   loading: boolean;
   error?: string | null;
 }
 
 const initialState: ProjectsState = {
   projects: [],
-  members: [],
+  project: null,
   loading: false,
   error: null,
 };
@@ -117,11 +116,11 @@ export const inviteMember = createAsyncThunk(
   }
 );
 
-export const fetchProjectMembers = createAsyncThunk(
-  "projects/fetchMembers",
+export const fetchProjectDetails = createAsyncThunk(
+  "projects/fetchProjectDetails",
   async (projectId: string, thunkAPI) => {
     try {
-      const res = await api.get(`/projects/${projectId}/members`);
+      const res = await api.get(`/projects/${projectId}/project-details`);
       return res.data.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(
@@ -191,16 +190,16 @@ const projectsSlice = createSlice({
         state.error = (payload as string) || "Failed";
       });
     builder
-      .addCase(fetchProjectMembers.pending, (state) => {
+      .addCase(fetchProjectDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
-        state.members = [];
+        state.project = null;
       })
-      .addCase(fetchProjectMembers.fulfilled, (state, action) => {
+      .addCase(fetchProjectDetails.fulfilled, (state, action) => {
         state.loading = false;
-        state.members = action.payload;
+        state.project = action.payload;
       })
-      .addCase(fetchProjectMembers.rejected, (state, action) => {
+      .addCase(fetchProjectDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
@@ -210,9 +209,8 @@ const projectsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(searchUsersToInvite.fulfilled, (state, action) => {
+      .addCase(searchUsersToInvite.fulfilled, (state) => {
         state.loading = false;
-        // state.users = action.payload;
       })
       .addCase(searchUsersToInvite.rejected, (state, action) => {
         state.loading = false;

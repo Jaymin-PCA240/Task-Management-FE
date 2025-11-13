@@ -21,6 +21,7 @@ const BoardView: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
   const { user } = useSelector((state: RootState) => state.auth);
+  const { project } = useSelector((s: RootState) => s.projects);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
@@ -56,23 +57,26 @@ const BoardView: React.FC = () => {
       {!loading && (
         <>
           <div className="w-full max-w-[1600px]">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-semibold">{tasks[0].project.name}</h2>
-              <div className="flex items-center gap-3">
-                {user.id === tasks[0].project.owner && (
+            <div className="flex justify-between bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-6 px-8 mb-4">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">{project?.name}</h1>
+                <p className="text-white/90">{project?.description}</p>
+              </div>
+              <div className="flex items-center">
+                {user.id === project?.owner?._id && (
                   <>
                     <button
                       onClick={() => {
                         setEditingTask(null);
                         setOpenTaskModal(true);
                       }}
-                      className="bg-gradient-to-r from-blue-700 to-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                      className=" bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                     >
-                      <FiPlus /> Add Task
+                      + Create Task
                     </button>
                     <button
                       onClick={() => setOpenInvite(true)}
-                      className="px-3 py-2 border rounded-lg bg-gradient-to-r from-green-700 to-green-500 text-white "
+                      className="bg-gradient-to-r from-green-700 to-green-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition mr-2 ml-2"
                     >
                       Invite
                     </button>
@@ -80,12 +84,28 @@ const BoardView: React.FC = () => {
                 )}
                 <button
                   onClick={() => setShowActivity(true)}
-                  className="bg-gradient-to-r from-orange-700 to-orange-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                  className="bg-gradient-to-r from-orange-700 to-orange-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
                 >
                   View Activity
                 </button>
+                <div className="flex -space-x-3 ml-2">
+                  {project?.members?.slice(0, 3)?.map((m: any) => (
+                    <div
+                      key={m._id}
+                      className="w-8 h-8 rounded-full bg-gradient-to-r from-white to-white text-gray-700 flex items-center justify-center text-sm font-semibold"
+                    >
+                      {m.name?.charAt(0).toUpperCase()}
+                    </div>
+                  ))}
+                  {project?.members?.length > 3 && (
+                    <div className="w-8 h-8 rounded-full bg-white text-gray-700 flex items-center justify-center text-sm font-semibold">
+                      +{project?.members?.length - 3}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+
             <DragDropContext onDragEnd={onDragEnd}>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {(["todo", "in-progress", "in-review", "done"] as const).map(

@@ -33,7 +33,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         open={alert.open}
         autoHideDuration={3000}
         onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert onClose={handleClose} severity={alert.type} variant="filled" sx={{ width: "100%" }}>
           {alert.message}

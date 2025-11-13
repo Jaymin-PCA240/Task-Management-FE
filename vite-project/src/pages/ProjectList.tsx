@@ -117,6 +117,18 @@ export default function ProjectsPage() {
                     {format(new Date(project.createdAt ?? ""), "MMM dd, yyyy")}
                   </span>
                 </div>
+
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <span>
+                      👥
+                    </span>
+                    <span className="font-medium">
+                      {project.members?.length || 0} Member
+                      {project.members?.length !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

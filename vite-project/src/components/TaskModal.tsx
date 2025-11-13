@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { type AppDispatch, type RootState } from "../app/store";
 import { createTask, updateTask } from "../features/tasks/tasksSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProjectMembers } from "../features/projects/projectsSlice";
+import { fetchProjectDetails } from "../features/projects/projectsSlice";
 import { ChevronDown, Check } from "lucide-react"; //
 import { useAlert } from "../context/AlertContext";
 
@@ -17,13 +17,13 @@ const TaskSchema = Yup.object({
 
 const TaskModal = ({ open, onClose, initial, projectId }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { members } = useSelector((s: RootState) => s.projects);
+  const { project } = useSelector((s: RootState) => s.projects);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { showAlert } = useAlert();
 
   useEffect(() => {
-    if (projectId) dispatch(fetchProjectMembers(projectId));
+    if (projectId) dispatch(fetchProjectDetails(projectId));
   }, [projectId, dispatch]);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
                   className="w-full border rounded p-2 flex justify-between items-center hover:bg-gray-50 transition"
                 >
                   {values.assignees
-                    ? members.find((m: any) => m._id === values.assignees)
+                    ? project?.members.find((m: any) => m._id === values.assignees)
                         ?.name || "Select member"
                     : "Select member"}
                   <ChevronDown
@@ -156,12 +156,12 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
                       — No Assignee —
                     </div>
 
-                    {members.length === 0 ? (
+                    {project?.members.length === 0 ? (
                       <p className="text-sm text-gray-500 px-3 py-2">
                         No members found
                       </p>
                     ) : (
-                      members.map((m: any) => (
+                      project?.members.map((m: any) => (
                         <div
                           key={m._id}
                           onClick={() => {

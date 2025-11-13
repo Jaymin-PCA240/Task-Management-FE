@@ -32,6 +32,21 @@ const TaskCard = ({ task, onEdit }: any) => {
           <p className="text-sm text-gray-500 line-clamp-2">
             {task.description}
           </p>
+          <div className="flex items-center gap-1 mt-3">
+            {task.assignees && task.assignees.length > 0 ? (
+              task.assignees.map((user: any) => (
+                <div
+                  key={user._id}
+                  title={user.name}
+                  className="w-7 h-7 rounded-full bg-gradient-to-r from-blue-700 to-blue-500 text-white flex items-center justify-center text-sm font-semibold"
+                >
+                  {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+                </div>
+              ))
+            ) : (
+              <span className="text-xs text-gray-400">No assignees</span>
+            )}
+          </div>
         </div>
         <div className="flex flex-col items-end gap-2">
           <div className="flex gap-2">

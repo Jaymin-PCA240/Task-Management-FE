@@ -9,7 +9,7 @@ export default function Layout() {
         <Header />
       </div>
 
-      <main className="flex-grow flex justify-center px-4 pt-20 pb-12 md:px-10">
+      <main className="flex-grow flex justify-center px-4 pt-20 pb-12 md:px-10 ">
         <Outlet />
       </main>
 
