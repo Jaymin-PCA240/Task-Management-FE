@@ -199,7 +199,7 @@ const authSlice = createSlice({
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data.user;
+        state.user = action.payload.user;
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;

@@ -19,7 +19,7 @@ const ProfilePage = () => {
       <section className="bg-gradient-to-r from-indigo-700 via-blue-600 to-blue-500 text-white rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-lg gap-6">
         <div className="flex items-center gap-4 md:gap-6">
           <img
-            src={user?.avatar || "/default-avatar.png"}
+            src="/avatar.svg"
             alt="User Avatar"
             className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white shadow-md object-cover"
           />

@@ -3,6 +3,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { FiSearch } from "react-icons/fi";
 import {
+  fetchProjectDetails,
   inviteMember,
   searchUsersToInvite,
 } from "../features/projects/projectsSlice";
@@ -43,6 +44,7 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
   ) => {
     const res = await dispatch(inviteMember({ projectId, email }));
     if (res.meta.requestStatus === "fulfilled") {
+      await dispatch(fetchProjectDetails(projectId));
       onClose();
       resetForm();
       setSubmitting(false);

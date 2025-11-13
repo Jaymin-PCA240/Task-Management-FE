@@ -12,20 +12,21 @@ import { fetchTasksByProject, moveTask } from "../features/tasks/tasksSlice";
 import TaskCard from "../components/TaskCard";
 import TaskModal from "../components/TaskModal";
 import InviteMemberModal from "../components/InviteMemberModal";
-import { FiPlus } from "react-icons/fi";
 import Loader from "../components/Loader";
 import ActivityLogModal from "../components/ActivityLogModal";
+import ProjectMembersModal from "../components/ProjectMembersModal";
 
 const BoardView: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
   const { user } = useSelector((state: RootState) => state.auth);
-  const { project } = useSelector((s: RootState) => s.projects);
+  const { project, loading: loading2 } = useSelector((s: RootState) => s.projects);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [openMembers, setOpenMembers] = useState(false);
 
   useEffect(() => {
     if (projectId) dispatch(fetchTasksByProject(projectId));
@@ -53,12 +54,12 @@ const BoardView: React.FC = () => {
 
   return (
     <>
-      <Loader loading={loading} message="Fetching your data..." size="lg" />
-      {!loading && (
+      {loading ? <Loader loading={loading || loading2} message="Fetching your data..." size="lg" />
+      : (
         <>
           <div className="w-full max-w-[1600px]">
-            <div className="flex justify-between bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-6 px-8 mb-4">
-              <div>
+            <div className="md:flex justify-between bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-6 px-8 mb-4">
+              <div className="mb-2 md:mb-0">
                 <h1 className="text-3xl font-bold mb-2">{project?.name}</h1>
                 <p className="text-white/90">{project?.description}</p>
               </div>
@@ -88,7 +89,7 @@ const BoardView: React.FC = () => {
                 >
                   View Activity
                 </button>
-                <div className="flex -space-x-3 ml-2">
+                <div className="flex -space-x-3 ml-2 cursor-pointer" onClick={() => setOpenMembers(true)}>
                   {project?.members?.slice(0, 3)?.map((m: any) => (
                     <div
                       key={m._id}
@@ -175,6 +176,11 @@ const BoardView: React.FC = () => {
           <ActivityLogModal
             open={showActivity}
             onClose={() => setShowActivity(false)}
+            projectId={projectId}
+          />
+          <ProjectMembersModal
+            open={openMembers}
+            onClose={() => setOpenMembers(false)}
             projectId={projectId}
           />
         </>

@@ -1,7 +1,4 @@
-import {
-  createSlice,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../api/axiosInstance";
 
 export interface Project {
@@ -16,6 +13,7 @@ export interface Project {
 interface ProjectsState {
   projects: Project[];
   project: Project | null;
+  dashboard: null;
   loading: boolean;
   error?: string | null;
 }
@@ -23,6 +21,7 @@ interface ProjectsState {
 const initialState: ProjectsState = {
   projects: [],
   project: null,
+  dashboard: null,
   loading: false,
   error: null,
 };
@@ -130,6 +129,37 @@ export const fetchProjectDetails = createAsyncThunk(
   }
 );
 
+export const removeProjectMember = createAsyncThunk(
+  "projects/removeMember",
+  async (
+    { projectId, memberId }: { projectId: string; memberId: string },
+    thunkAPI
+  ) => {
+    try {
+      const res = await api.delete(
+        `/projects/${projectId}/remove-member/${memberId}`
+      );
+      return { memberId, ...res.data };
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Project's members failed"
+      );
+    }
+  }
+);
+
+export const fetchDashboard = createAsyncThunk(
+  "dashboard/fetchDashboard",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await api.get("/projects/get-dashboard-stats");
+      return res.data.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch");
+    }
+  }
+);
+
 const projectsSlice = createSlice({
   name: "projects",
   initialState,
@@ -225,6 +255,27 @@ const projectsSlice = createSlice({
         state.loading = false;
       })
       .addCase(inviteMember.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(removeProjectMember.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeProjectMember.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(removeProjectMember.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(fetchDashboard.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDashboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.dashboard = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchDashboard.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
