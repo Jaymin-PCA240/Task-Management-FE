@@ -30,9 +30,24 @@ const BoardView: React.FC = () => {
   const [showActivity, setShowActivity] = useState(false);
   const [openMembers, setOpenMembers] = useState(false);
 
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterAssignee, setFilterAssignee] = useState("all");
+
   useEffect(() => {
-    if (projectId) dispatch(fetchTasksByProject(projectId));
-  }, [dispatch, projectId]);
+    const delaySearch = setTimeout(() => {
+      if (projectId)
+        dispatch(
+          fetchTasksByProject({
+            projectId,
+            search,
+            filterStatus,
+            filterAssignee,
+          })
+        );
+    }, 400);
+    return () => clearTimeout(delaySearch);
+  }, [dispatch, projectId, search, filterStatus, filterAssignee]);
 
   const columns = useMemo(() => {
     return {
@@ -78,13 +93,13 @@ const BoardView: React.FC = () => {
                         setEditingTask(null);
                         setOpenTaskModal(true);
                       }}
-                      className=" bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+                      className=" bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:scale-105 bg-gray-100 transition"
                     >
                       + Create Task
                     </button>
                     <button
                       onClick={() => setOpenInvite(true)}
-                      className="bg-gradient-to-r from-green-700 to-green-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition mr-2 ml-2"
+                      className="bg-gradient-to-r from-green-700 to-green-500 text-white font-medium px-4 py-2 rounded-lg hover:scale-105 bg-gray-100 transition mr-2 ml-2"
                     >
                       Invite
                     </button>
@@ -92,7 +107,7 @@ const BoardView: React.FC = () => {
                 )}
                 <button
                   onClick={() => setShowActivity(true)}
-                  className="bg-gradient-to-r from-orange-700 to-orange-500 text-white font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+                  className="bg-gradient-to-r from-orange-700 to-orange-500 text-white font-medium px-4 py-2 rounded-lg hover:scale-105 bg-gray-100 transition"
                 >
                   View Activity
                 </button>
@@ -115,6 +130,63 @@ const BoardView: React.FC = () => {
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="flex flex-col md:flex-row md:justify-end gap-3 mb-4">
+              <div className="relative w-full md:w-64">
+                <input
+                  type="text"
+                  placeholder="Search tasks..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="px-3 py-2 border rounded-lg w-full pr-10"
+                />
+
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-2 top-2 text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-3 py-2 border rounded-lg w-full md:w-48"
+              >
+                <option value="all">All Status</option>
+                <option value="todo">To Do</option>
+                <option value="in-progress">In Progress</option>
+                <option value="in-review">In Review</option>
+                <option value="done">Done</option>
+              </select>
+
+              <select
+                value={filterAssignee}
+                onChange={(e) => setFilterAssignee(e.target.value)}
+                className="px-3 py-2 border rounded-lg w-full md:w-48"
+              >
+                <option value="all">All Members</option>
+                {project?.members?.map((m: any) => (
+                  <option key={m._id} value={m._id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                onClick={() => {
+                  setSearch("");
+                  setFilterStatus("all");
+                  setFilterAssignee("all");
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-red-700 to-red-500 text-white rounded-lg font-medium"
+              >
+                Reset
+              </button>
             </div>
 
             <DragDropContext onDragEnd={onDragEnd}>

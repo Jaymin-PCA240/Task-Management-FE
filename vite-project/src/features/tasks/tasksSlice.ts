@@ -3,9 +3,11 @@ import api from "../../api/axiosInstance";
 
 export const fetchTasksByProject = createAsyncThunk(
   "tasks/fetchByProject",
-  async (projectId: string, { rejectWithValue }) => {
+  async ({projectId, search, filterStatus, filterAssignee}: {projectId: string, search: string,filterStatus: string, filterAssignee: string}, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/tasks/task-by-project/${projectId}`);
+      const res = await api.get(`/tasks/task-by-project/${projectId}`,{
+        params: { search, filterStatus, filterAssignee },
+      });
       return res.data.data; // assuming APIResponse structure
     } catch (err: any) {
       return rejectWithValue(err.response?.data || err.message);

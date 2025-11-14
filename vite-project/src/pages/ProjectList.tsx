@@ -51,7 +51,7 @@ export default function ProjectsPage() {
                 setEditing(null);
                 setOpen(true);
               }}
-              className="mt-6 bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
+              className="mt-6 bg-white text-blue-600 font-medium px-4 py-2 rounded-lg hover:scale-105 bg-gray-100 transition"
             >
               + Create Project
             </button>
