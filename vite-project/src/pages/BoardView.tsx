@@ -21,7 +21,7 @@ const BoardView: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
   const { user } = useSelector((state: RootState) => state.auth);
-  const { project, loading: loading2 } = useSelector(
+  const { project } = useSelector(
     (s: RootState) => s.projects
   );
   const [openTaskModal, setOpenTaskModal] = useState(false);
@@ -73,7 +73,7 @@ const BoardView: React.FC = () => {
     <>
       {loading ? (
         <Loader
-          loading={loading || loading2}
+          loading={loading}
           message="Fetching your data..."
           size="lg"
         />
