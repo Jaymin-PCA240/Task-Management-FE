@@ -17,7 +17,7 @@ export default function Dashboard() {
   const stats = [
     {
       label: "Total Invitations",
-      value: 8,
+      value: dashboard?.totalInvitations,
       icon: <FaUsers className="text-white text-3xl" />,
       gradient: "from-blue-500 to-indigo-600",
     },
@@ -29,7 +29,7 @@ export default function Dashboard() {
     },
     {
       label: "Completed Tasks",
-      value: 2,
+      value: dashboard?.completedTasks,
       icon: <FaCheckCircle className="text-white text-3xl" />,
       gradient: "from-orange-400 to-red-500",
     },
@@ -61,18 +61,18 @@ export default function Dashboard() {
             <div className="flex gap-4 flex-wrap justify-center md:justify-end">
               <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md">
                 <p className="font-semibold text-sm md:text-base">
-                  2 Completed
+                  {dashboard?.completedPercentage}% Task Completed
                 </p>
                 <div className="w-full bg-white/30 rounded-full h-2 mt-2">
-                  <div className="bg-white h-2 rounded-full w-[40%]"></div>
+                  <div className={`bg-white h-2 rounded-full`} style={{ width: `${dashboard?.completedPercentage}%` }}></div>
                 </div>
               </div>
               <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md">
                 <p className="font-semibold text-sm md:text-base">
-                  50 Total Tasks
+                  {dashboard?.totalTasks} Assigned Tasks
                 </p>
                 <div className="w-full bg-white/30 rounded-full h-2 mt-2">
-                  <div className="bg-white h-2 rounded-full w-[80%]"></div>
+                  <div className="bg-white h-2 rounded-full w-[100%]"></div>
                 </div>
               </div>
             </div>

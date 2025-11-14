@@ -7,12 +7,13 @@ import { deleteTask } from "../features/tasks/tasksSlice";
 import { useAlert } from "../context/AlertContext";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
+import TaskDetailsModal from "./TaskDetailsModal";
 
 const TaskCard = ({ task, onEdit }: any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [showComments, setShowComments] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<any>(null);
+  const [openTask, setOpenTask] = useState(false);
   const { showAlert } = useAlert();
 
   const currentUser = useSelector((s: RootState) => s.auth.user);
@@ -25,7 +26,13 @@ const TaskCard = ({ task, onEdit }: any) => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-3 shadow hover:shadow-md transition">
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        setOpenTask(true);
+      }}
+      className="bg-white rounded-lg p-3 shadow hover:shadow-md transition"
+    >
       <div className="flex justify-between items-start">
         <div>
           <h4 className="font-semibold">{task.title}</h4>
@@ -54,7 +61,10 @@ const TaskCard = ({ task, onEdit }: any) => {
               <>
                 {" "}
                 <button
-                  onClick={onEdit}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit();
+                  }}
                   className="text-gray-600 hover:text-blue-600"
                 >
                   <FiEdit2 />
@@ -71,20 +81,12 @@ const TaskCard = ({ task, onEdit }: any) => {
                 </button>{" "}
               </>
             )}
-            <button
-              onClick={() => setShowComments((s) => !s)}
-              className="text-gray-600 hover:text-blue-600"
-            >
-              <FiMessageSquare />
-            </button>
           </div>
           <span className="text-xs text-gray-400">
             {formatDistanceToNow(new Date(task.createdAt), { addSuffix: true })}
           </span>
         </div>
       </div>
-
-      {showComments && <CommentBox task={task} />}
 
       <ConfirmDeleteModal
         open={confirmOpen}
@@ -93,6 +95,13 @@ const TaskCard = ({ task, onEdit }: any) => {
         highlight={selectedTask?.title}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={handleDeleteTask}
+      />
+      <TaskDetailsModal
+        open={openTask}
+        onClose={() => {
+          setOpenTask(false);
+        }}
+        selectedTask={task}
       />
     </div>
   );

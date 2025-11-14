@@ -21,7 +21,9 @@ const BoardView: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
   const { user } = useSelector((state: RootState) => state.auth);
-  const { project, loading: loading2 } = useSelector((s: RootState) => s.projects);
+  const { project, loading: loading2 } = useSelector(
+    (s: RootState) => s.projects
+  );
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
@@ -54,8 +56,13 @@ const BoardView: React.FC = () => {
 
   return (
     <>
-      {loading ? <Loader loading={loading || loading2} message="Fetching your data..." size="lg" />
-      : (
+      {loading ? (
+        <Loader
+          loading={loading || loading2}
+          message="Fetching your data..."
+          size="lg"
+        />
+      ) : (
         <>
           <div className="w-full max-w-[1600px]">
             <div className="md:flex justify-between bg-gradient-to-r from-blue-700 to-blue-500 rounded-2xl text-white py-6 px-8 mb-4">
@@ -89,7 +96,10 @@ const BoardView: React.FC = () => {
                 >
                   View Activity
                 </button>
-                <div className="flex -space-x-3 ml-2 cursor-pointer" onClick={() => setOpenMembers(true)}>
+                <div
+                  className="flex -space-x-3 ml-2 cursor-pointer"
+                  onClick={() => setOpenMembers(true)}
+                >
                   {project?.members?.slice(0, 3)?.map((m: any) => (
                     <div
                       key={m._id}

@@ -14,6 +14,7 @@ const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
   const { project, loading } = useSelector(
     (state: RootState) => state.projects
   );
+  const currentUser = useSelector((s: RootState) => s.auth.user);
 
   if (!open) return null;
 
@@ -50,7 +51,7 @@ const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
                     <p className="text-sm text-gray-500">{m.email}</p>
                   </div>
                 </div>
-                {!(project.owner._id === m._id) && (
+                {!(project.owner._id === m._id) && (currentUser.id === project.owner._id) && (
                   <button
                     onClick={async () => {
                       const res = await dispatch(

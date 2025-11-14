@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { type RootState, type AppDispatch } from "../app/store";
 import { logoutThunk } from "../features/auth/authSlice";
@@ -12,6 +12,12 @@ export default function Header() {
   const [openMenu, setOpenMenu] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const location = useLocation();
+
+  const isActive = (path: string) =>
+    location.pathname === path ||
+    location.pathname.startsWith(path);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -49,13 +55,21 @@ export default function Header() {
           <div className="flex items-center gap-2 md:gap-6 text-gray-700 font-medium">
             <Link
               to="/dashboard"
-              className="hover:text-blue-600 transition-colors duration-200"
+              className={`transition-colors duration-200 ${
+                isActive("/dashboard")
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
             >
               Dashboard
             </Link>
             <Link
               to="/projects"
-              className="hover:text-blue-600 transition-colors duration-200"
+              className={`transition-colors duration-200 ${
+                isActive("/projects")
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
             >
               Projects
             </Link>
