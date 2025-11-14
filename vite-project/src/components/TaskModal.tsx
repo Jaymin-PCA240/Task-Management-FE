@@ -43,7 +43,7 @@ const TaskModal = ({ open, onClose, initial, projectId }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl p-6 w-[95%] max-w-lg">
+      <div className="bg-white rounded-xl p-6 w-[95%] max-w-lg overflow-y-auto max-h-[95vh] custom-scroll">
         <h3 className="text-lg font-semibold mb-3">
           {initial ? "Edit Task" : "Create Task"}
         </h3>

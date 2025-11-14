@@ -9,13 +9,13 @@ const TaskDetailsModal = ({ open, onClose, selectedTask }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg p-6 relative">
+      <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg p-6 relative max-h-[70vh] overflow-y-auto custom-scroll">
         <button
           onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}
-          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+          className="absolute right-5 top-5 text-gray-500 hover:text-gray-700"
         >
           ✕
         </button>
@@ -95,7 +95,7 @@ const TaskDetailsModal = ({ open, onClose, selectedTask }: any) => {
                 <h3 className="text-sm font-medium text-gray-700 mb-1">
                   Comments
                 </h3>
-                <div className="bg-gray-50 rounded-lg p-3 max-h-60 overflow-y-auto">
+                <div className="bg-gray-50 rounded-lg p-3 max-h-55 overflow-y-auto">
                   <CommentBox task={selectedTask} />
                 </div>
               </div>
