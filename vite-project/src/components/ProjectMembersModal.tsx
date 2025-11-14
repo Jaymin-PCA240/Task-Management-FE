@@ -20,7 +20,7 @@ const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="bg-white rounded-xl w-full max-w-md shadow-lg">
+      <div className="bg-white rounded-xl w-full max-w-md shadow-lg max-h-[90vh] overflow-y-auto custom-scroll">
         <div className="flex justify-between items-center p-4 border-b">
           <h3 className="text-lg font-semibold">Project Members</h3>
           <button

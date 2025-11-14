@@ -19,7 +19,7 @@ const ActivityLogModal = ({ open, onClose, projectId }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-xl p-6 w-[95%] max-w-3xl shadow-lg">
+      <div className="bg-white rounded-xl p-6 w-[95%] max-w-3xl shadow-lg max-h-[90vh] overflow-y-auto custom-scroll">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Recent Activity</h3>
           <button

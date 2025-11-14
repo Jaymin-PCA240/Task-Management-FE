@@ -118,7 +118,7 @@ const BoardView: React.FC = () => {
             </div>
 
             <DragDropContext onDragEnd={onDragEnd}>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 min-h-[60vh]">
                 {(["todo", "in-progress", "in-review", "done"] as const).map(
                   (status) => (
                     <Droppable droppableId={status} key={status}>
@@ -126,7 +126,7 @@ const BoardView: React.FC = () => {
                         <div
                           ref={provided.innerRef}
                           {...provided.droppableProps}
-                          className="bg-gray-50 rounded-lg p-4 min-h-[300px] shadow-sm"
+                          className="bg-gray-50 rounded-lg p-4  shadow-sm"
                         >
                           <h3 className="font-medium mb-3 capitalize">
                             {status === "todo"
@@ -137,31 +137,32 @@ const BoardView: React.FC = () => {
                               ? "In Review"
                               : "Done"}
                           </h3>
-
-                          {columns[status].map((task: any, idx: number) => (
-                            <Draggable
-                              key={task._id}
-                              draggableId={task._id}
-                              index={idx}
-                            >
-                              {(prov) => (
-                                <div
-                                  ref={prov.innerRef}
-                                  {...prov.draggableProps}
-                                  {...prov.dragHandleProps}
-                                  className="mb-3"
-                                >
-                                  <TaskCard
-                                    task={task}
-                                    onEdit={() => {
-                                      setEditingTask(task);
-                                      setOpenTaskModal(true);
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))}
+                          <div className="max-h-[80vh] overflow-y-auto custom-scroll">
+                            {columns[status].map((task: any, idx: number) => (
+                              <Draggable
+                                key={task._id}
+                                draggableId={task._id}
+                                index={idx}
+                              >
+                                {(prov) => (
+                                  <div
+                                    ref={prov.innerRef}
+                                    {...prov.draggableProps}
+                                    {...prov.dragHandleProps}
+                                    className="mb-3"
+                                  >
+                                    <TaskCard
+                                      task={task}
+                                      onEdit={() => {
+                                        setEditingTask(task);
+                                        setOpenTaskModal(true);
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                          </div>
 
                           {provided.placeholder}
                         </div>

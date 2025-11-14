@@ -9,7 +9,7 @@ const TaskDetailsModal = ({ open, onClose, selectedTask }: any) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg p-6 relative max-h-[70vh] overflow-y-auto custom-scroll">
+      <div className="bg-white rounded-xl w-full max-w-2xl shadow-lg p-6 relative max-h-[80vh] overflow-y-auto custom-scroll">
         <button
           onClick={(e) => {
             e.stopPropagation();

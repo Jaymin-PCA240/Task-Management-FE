@@ -59,7 +59,7 @@ export default function Dashboard() {
             </div>
 
             <div className="flex gap-4 flex-wrap justify-center md:justify-end">
-              <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md">
+              <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md hover:scale-105">
                 <p className="font-semibold text-sm md:text-base">
                   {dashboard?.completedPercentage}% Task Completed
                 </p>
@@ -67,7 +67,7 @@ export default function Dashboard() {
                   <div className={`bg-white h-2 rounded-full`} style={{ width: `${dashboard?.completedPercentage}%` }}></div>
                 </div>
               </div>
-              <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md">
+              <div className="bg-white/20 backdrop-blur-md p-4 rounded-2xl text-center w-32 md:w-36 shadow-md hover:scale-105">
                 <p className="font-semibold text-sm md:text-base">
                   {dashboard?.totalTasks} Assigned Tasks
                 </p>

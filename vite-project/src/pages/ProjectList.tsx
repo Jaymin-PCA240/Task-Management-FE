@@ -67,7 +67,7 @@ export default function ProjectsPage() {
             {projects.map((project) => (
               <div
                 key={project._id}
-                className="bg-white shadow-md rounded-xl p-5 flex flex-col hover:shadow-lg transition-all cursor-pointer"
+                className="bg-white shadow-md rounded-xl p-5 flex flex-col hover:scale-105 shadow-lg transition-all cursor-pointer "
                 onClick={() =>
                   navigate(
                     generatePath("/projects/:projectId/board", {
