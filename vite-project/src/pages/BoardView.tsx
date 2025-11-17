@@ -15,15 +15,19 @@ import InviteMemberModal from "../components/InviteMemberModal";
 import Loader from "../components/Loader";
 import ActivityLogModal from "../components/ActivityLogModal";
 import ProjectMembersModal from "../components/ProjectMembersModal";
+import { socket } from "../socket/socket.js";
+import {
+  addTaskRealTime,
+  updateTaskRealTime,
+  deleteTaskRealTime,
+} from "../features/tasks/tasksSlice";
 
 const BoardView: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const { items: tasks, loading } = useSelector((s: RootState) => s.tasks);
   const { user } = useSelector((state: RootState) => state.auth);
-  const { project } = useSelector(
-    (s: RootState) => s.projects
-  );
+  const { project } = useSelector((s: RootState) => s.projects);
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [openInvite, setOpenInvite] = useState(false);
@@ -33,6 +37,28 @@ const BoardView: React.FC = () => {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterAssignee, setFilterAssignee] = useState("all");
+
+  useEffect(() => {
+    socket.connect()
+    socket.on("taskCreated", (task) => {
+      dispatch(addTaskRealTime(task));
+    });
+
+    socket.on("taskUpdated", (task) => {
+      dispatch(updateTaskRealTime(task));
+    });
+
+    socket.on("taskDeleted", (taskId) => {
+      dispatch(deleteTaskRealTime(taskId));
+    });
+
+    return () => {
+      socket.off("taskCreated");
+      socket.off("taskUpdated");
+      socket.off("taskDeleted");
+      socket.disconnect();
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
@@ -72,11 +98,7 @@ const BoardView: React.FC = () => {
   return (
     <>
       {loading ? (
-        <Loader
-          loading={loading}
-          message="Fetching your data..."
-          size="lg"
-        />
+        <Loader loading={loading} message="Fetching your data..." size="lg" />
       ) : (
         <>
           <div className="w-full max-w-[1600px]">

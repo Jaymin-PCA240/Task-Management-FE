@@ -131,6 +131,18 @@ const tasksSlice = createSlice({
     clearError(state) {
       state.error = null;
     },
+    addTaskRealTime: (state, action) => {
+      state.items.unshift(action.payload);
+    },
+    
+    updateTaskRealTime: (state, action) => {
+      const idx = state.items.findIndex(t => t._id === action.payload._id);
+      if (idx !== -1) state.items[idx] = action.payload;
+    },
+    
+    deleteTaskRealTime: (state, action) => {
+      state.items = state.items.filter(t => t._id !== action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -147,7 +159,7 @@ const tasksSlice = createSlice({
         state.error = action.payload;
       });
     builder.addCase(createTask.fulfilled, (state, { payload }) => {
-      state.items.unshift(payload);
+      // state.items.unshift(payload);
       state.loading = false;
     });
     builder.addCase(updateTask.fulfilled, (state, { payload }) => {
@@ -182,9 +194,10 @@ const tasksSlice = createSlice({
       state.items = state.items.map((t) =>
         t._id === updated._id ? updated : t
       );
-    });
+    })
+    ;
   },
 });
 
-export const { clearError } = tasksSlice.actions;
+export const { clearError, addTaskRealTime, updateTaskRealTime, deleteTaskRealTime } = tasksSlice.actions;
 export default tasksSlice.reducer;

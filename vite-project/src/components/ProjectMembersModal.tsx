@@ -7,6 +7,7 @@ import {
 import { FaUserCircle } from "react-icons/fa";
 import { useAlert } from "../context/AlertContext";
 import Loader from "../components/Loader";
+import { fetchTasksByProject } from "../features/tasks/tasksSlice";
 
 const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +34,11 @@ const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
 
         <div className="max-h-80 overflow-y-auto divide-y">
           {loading ? (
-            <Loader loading={loading} message="Fetching your data..." size="lg"/>
+            <Loader
+              loading={loading}
+              message="Fetching your data..."
+              size="lg"
+            />
           ) : project?.members?.length === 0 ? (
             <p className="p-4 text-gray-500 text-sm text-center">
               No members found
@@ -51,24 +56,33 @@ const ProjectMembersModal = ({ open, onClose, projectId }: any) => {
                     <p className="text-sm text-gray-500">{m.email}</p>
                   </div>
                 </div>
-                {!(project.owner._id === m._id) && (currentUser.id === project.owner._id) && (
-                  <button
-                    onClick={async () => {
-                      const res = await dispatch(
-                        removeProjectMember({ projectId, memberId: m._id })
-                      );
-                      if (res.meta.requestStatus === "fulfilled") {
-                        await dispatch(fetchProjectDetails(projectId));
-                        showAlert("Member removed successfully!", "success");
-                      } else {
-                        showAlert("Remove member failed", "error");
-                      }
-                    }}
-                    className="bg-gradient-to-r from-red-700 to-red-500 px-2 py-2 text-white rounded text-sm"
-                  >
-                    Remove
-                  </button>
-                )}
+                {!(project.owner._id === m._id) &&
+                  currentUser.id === project.owner._id && (
+                    <button
+                      onClick={async () => {
+                        const res = await dispatch(
+                          removeProjectMember({ projectId, memberId: m._id })
+                        );
+                        if (res.meta.requestStatus === "fulfilled") {
+                          await dispatch(fetchProjectDetails(projectId));
+                          await dispatch(
+                            fetchTasksByProject({
+                              projectId,
+                              search: "",
+                              filterStatus: "all",
+                              filterAssignee: "all",
+                            })
+                          );
+                          showAlert("Member removed successfully!", "success");
+                        } else {
+                          showAlert("Remove member failed", "error");
+                        }
+                      }}
+                      className="bg-gradient-to-r from-red-700 to-red-500 px-2 py-2 text-white rounded text-sm"
+                    >
+                      Remove
+                    </button>
+                  )}
               </div>
             ))
           )}
