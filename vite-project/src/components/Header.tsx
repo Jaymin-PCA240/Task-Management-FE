@@ -43,7 +43,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
       <div className="mx-auto w-full max-w-[1600px] flex items-center justify-between px-4 md:px-10 py-3">
         {/* Left Logo */}
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/" className="flex items-center md:gap-2">
           <img src="/logo.svg" alt="BaseTeam Logo" className="w-8 h-8" />
           <span className="font-semibold bg-gradient-to-r from-blue-700 to-blue-500 bg-clip-text text-transparent hover:from-blue-800 hover:to-blue-600 transition-colors duration-300 text-lg">
             TaskFlow
@@ -72,6 +72,16 @@ export default function Header() {
               }`}
             >
               Projects
+            </Link>
+            <Link
+              to="/invitations"
+              className={`transition-colors duration-200 ${
+                isActive("/invitations")
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
+            >
+              Invitations
             </Link>
           </div>
         )}

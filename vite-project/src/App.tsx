@@ -11,6 +11,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Layout from "./layout/Layout";
 import BoardView from "./pages/BoardView";
 import ProfilePage from "./pages/ProfilePage";
+import InvitationList from "./pages/InvitationList";
 
 export default function App() {
   return (
@@ -43,6 +44,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ProjectsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/invitations"
+          element={
+            <ProtectedRoute>
+              <InvitationList />
             </ProtectedRoute>
           }
         />

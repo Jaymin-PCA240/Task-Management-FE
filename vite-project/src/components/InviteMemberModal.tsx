@@ -4,12 +4,12 @@ import * as Yup from "yup";
 import { FiSearch } from "react-icons/fi";
 import {
   fetchProjectDetails,
-  inviteMember,
   searchUsersToInvite,
 } from "../features/projects/projectsSlice";
 import type { AppDispatch, RootState } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "../context/AlertContext";
+import { inviteMember } from "../features/invitation/invitationSlice";
 
 const InviteSchema = Yup.object({
   email: Yup.string().email("Invalid email").required("Email is Required"),
@@ -38,11 +38,11 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
   };
 
   const handleInvite = async (
-    email: string,
+    userId: string,
     resetForm: any,
     setSubmitting: any
   ) => {
-    const res = await dispatch(inviteMember({ projectId, email }));
+    const res = await dispatch(inviteMember({ projectId, userId }));
     if (res.meta.requestStatus === "fulfilled") {
       await dispatch(fetchProjectDetails(projectId));
       onClose();
@@ -65,11 +65,10 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
         <Formik
           initialValues={{ email: "" }}
           validationSchema={InviteSchema}
-          onSubmit={async (values, { setSubmitting, resetForm }) => {
-            await handleInvite(values.email, resetForm, setSubmitting);
+          onSubmit={async () => {
           }}
         >
-          {({ errors, touched, setFieldValue, setSubmitting, resetForm }) => (
+          {({ setFieldValue, setSubmitting, resetForm }) => (
             <Form className="space-y-4">
               <div className="relative">
                 <div className="absolute left-3 top-2.5 text-gray-500">
@@ -110,7 +109,7 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
                         <button
                           type="button"
                           onClick={() =>
-                            handleInvite(u.email, resetForm, setSubmitting)
+                            handleInvite(u, resetForm, setSubmitting)
                           }
                           className="bg-gradient-to-r from-blue-700 to-blue-500 text-white  text-sm px-3 py-1 rounded hover:bg-blue-400"
                         >
@@ -122,22 +121,6 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Or Enter Email
-                </label>
-                <Field
-                  name="email"
-                  placeholder="member@example.com"
-                  className="w-full border rounded-lg p-2"
-                />
-                {errors.email && touched.email && (
-                  <div className="text-red-500 text-sm mt-1">
-                    {errors.email}
-                  </div>
-                )}
-              </div>
-
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   type="button"
@@ -148,12 +131,6 @@ const InviteMemberModal = ({ open, onClose, projectId }: any) => {
                   className="px-4 py-2 border rounded hover:bg-gray-100"
                 >
                   Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-700 to-blue-500 text-white rounded"
-                >
-                  Invite
                 </button>
               </div>
             </Form>

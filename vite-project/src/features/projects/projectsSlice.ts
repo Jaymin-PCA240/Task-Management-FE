@@ -100,21 +100,6 @@ export const searchUsersToInvite = createAsyncThunk(
   }
 );
 
-export const inviteMember = createAsyncThunk(
-  "projectInvite/inviteMember",
-  async (
-    { projectId, email }: { projectId: string; email: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const res = await api.post(`/projects/${projectId}/invite`, { email });
-      return res.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Invite failed");
-    }
-  }
-);
-
 export const fetchProjectDetails = createAsyncThunk(
   "projects/fetchProjectDetails",
   async (projectId: string, thunkAPI) => {
@@ -246,18 +231,7 @@ const projectsSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      // Invite member
-      .addCase(inviteMember.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(inviteMember.fulfilled, (state) => {
-        state.loading = false;
-      })
-      .addCase(inviteMember.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
+      
       .addCase(removeProjectMember.pending, (state) => {
         state.loading = true;
       })
