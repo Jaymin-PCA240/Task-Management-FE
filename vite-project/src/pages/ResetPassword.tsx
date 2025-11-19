@@ -87,7 +87,7 @@ export default function ResetPassword() {
                 fullWidth
                 label="Confirm Password"
                 name="confirmPassword"
-                type="password"
+                type={showConfirm ? "text" : "password"}
                 value={values.confirmPassword}
                 onChange={handleChange}
                 error={

@@ -71,30 +71,30 @@ export default function InvitationList() {
         ) : (
           filteredInvitations?.map((inv) => (
             <div
-              key={inv._id}
+              key={inv?._id}
               className="p-4 border rounded-lg mb-3 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition"
             >
               <div className="space-y-1">
                 <p className="font-medium text-gray-700">
                   Project:{" "}
-                  <span className="text-black">{inv.project.name}</span>
+                  <span className="text-black">{inv?.project?.name}</span>
                 </p>
                 <p className="text-gray-600">
                   Invited By:{" "}
-                  <span className="text-black">{inv.invitedBy.name}</span>
+                  <span className="text-black">{inv?.invitedBy?.name}</span>
                 </p>
                 <p className="text-sm text-gray-500 capitalize">
-                  Status: {inv.status}
+                  Status: {inv?.status}
                 </p>
               </div>
 
-              {inv.status === "pending" && (
+              {inv?.status === "pending" && (
                 <div className="flex gap-2">
                   <button
                     className="bg-gradient-to-r from-green-700 to-green-500 hover:bg-green-700 text-white px-4 py-1.5 rounded-md text-sm"
                     onClick={() => {
                       setSelectedAction("approve");
-                      setSelectedId(inv._id);
+                      setSelectedId(inv?._id);
                       setOpenModal(true);
                     }}
                   >
@@ -105,7 +105,7 @@ export default function InvitationList() {
                     className="bg-gradient-to-r from-red-700 to-red-500 hover:bg-red-700 text-white px-4 py-1.5 rounded-md text-sm"
                     onClick={() => {
                       setSelectedAction("reject");
-                      setSelectedId(inv._id);
+                      setSelectedId(inv?._id);
                       setOpenModal(true);
                     }}
                   >
